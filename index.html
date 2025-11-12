@@ -32,15 +32,31 @@
 
     <link rel="stylesheet" type="text/css" href="vis-network-editor.css"/>
 
-    <script lang="javascript" src="vis-network-editor.js"></script>
+    <script type="text/javascript" src="dagoba.js"></script>
+    <script type="text/javascript" src="gremlin-parser.js"></script>
+    <script type="text/javascript" src="genealogy-data.js"></script>
+    <script type="text/javascript" src="dagoba-integration.js"></script>
+    <script type="text/javascript" src="vis-network-editor.js"></script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
  
 
     <script>
       $(document).ready(() =>{
+        // Verify critical libraries are loaded
+        if (typeof Dagoba === 'undefined') {
+          console.error('Dagoba is not loaded!');
+          alert('Error: Dagoba library failed to load. Please check the console.');
+          return;
+        }
+        
+        if (typeof window.GremlinParser === 'undefined') {
+          console.warn('GremlinParser is not loaded. Queries will not work.');
+        }
+        
         initWidgets()
-        initVis()
+        initVis()  // Initialize vis options first
+        initDagobaGraph()  // Then initialize Dagoba graph which will render
       }) 
     </script>
   </head>
@@ -61,8 +77,81 @@
       </div>
       <div class="row">
         <div id="vis-config" hidden></div>
-        <input id="file-input" type="file" name="name" style="display: none;" />     
-        <div id="mynetwork"></div>       
+        <input id="file-input" type="file" name="name" style="display: none;" />
+        <div class="col-sm-9">
+          <div id="mynetwork"></div>
+        </div>
+        <div class="col-sm-3" id="query-panel">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>Gremlin Queries</h4>
+              <button class="btn btn-sm btn-primary" onclick="saveCurrentQuery()" style="margin: 5px 0;">Save Query</button>
+              <button class="btn btn-sm btn-info" onclick="toggleLukeLayer()" style="margin: 5px 0;">Toggle Luke 3</button>
+            <button class="btn btn-sm btn-success" onclick="exportGraphSON()" style="margin: 5px 0;">Export GraphSON</button>
+            <button class="btn btn-sm btn-warning" onclick="importGraphSONFromFile()" style="margin: 5px 0;">Import GraphSON</button>
+            <button class="btn btn-sm btn-danger" onclick="resetGraph()" style="margin: 5px 0;" title="Clear localStorage and reset to initial graph">Reset Graph</button>
+            <button class="btn btn-sm btn-default" onclick="showGremlinHelp()" style="margin: 5px 0;">Help</button>
+            </div>
+            <div class="panel-body">
+              <div id="saved-queries-list"></div>
+              <div id="query-editor-container" style="margin-top: 10px;">
+                <textarea id="query-editor" class="form-control" rows="5" placeholder="Enter Gremlin query (e.g., v({name: 'Jesus Christ'}))"></textarea>
+                <button class="btn btn-sm btn-success" onclick="executeQuery()" style="margin-top: 5px;">Execute</button>
+                <button class="btn btn-sm btn-warning" onclick="clearQueryResults()" style="margin-top: 5px;">Clear Results</button>
+              </div>
+              <div id="query-results" style="margin-top: 10px; max-height: 200px; overflow-y: auto;"></div>
+              
+              <!-- Properties Panel -->
+              <div id="properties-panel" style="margin-top: 15px; display: none;">
+                <h5>Properties</h5>
+                <div id="properties-content" style="background-color: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 3px; font-size: 0.9em; max-height: 300px; overflow-y: auto;"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Geographic Layout Panel -->
+          <div class="panel panel-default" style="margin-top: 10px;">
+            <div class="panel-heading">
+              <h5>Geographic Layout</h5>
+            </div>
+            <div class="panel-body">
+              <div class="form-group" style="margin-bottom: 10px;">
+                <label for="lat-property">Latitude Property:</label>
+                <input type="text" id="lat-property" class="form-control" placeholder="e.g., latitude, lat" style="font-size: 0.9em;">
+              </div>
+              <div class="form-group" style="margin-bottom: 10px;">
+                <label for="lng-property">Longitude Property:</label>
+                <input type="text" id="lng-property" class="form-control" placeholder="e.g., longitude, lng, lon" style="font-size: 0.9em;">
+              </div>
+              <button class="btn btn-sm btn-primary" onclick="applyGeographicLayout()" style="margin-right: 5px;">Apply Geographic Layout</button>
+              <button class="btn btn-sm btn-default" onclick="clearGeographicLayout()">Clear Layout</button>
+            </div>
+          </div>
+          
+          <!-- Gremlin Log Panel -->
+          <div class="panel panel-default" style="margin-top: 10px;">
+            <div class="panel-heading">
+              <h5>Gremlin Log</h5>
+              <button class="btn btn-xs btn-default" onclick="clearGremlinLog()" style="float: right; margin-top: -25px;">Clear Log</button>
+            </div>
+            <div class="panel-body" style="padding: 5px;">
+              <div id="gremlin-log" style="background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; padding: 10px; font-family: monospace; font-size: 0.85em; max-height: 300px; overflow-y: auto; min-height: 100px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Gremlin Help Panel -->
+      <div id="gremlin-help-panel" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; overflow-y: auto;">
+        <div style="background: white; margin: 20px auto; max-width: 900px; padding: 20px; border-radius: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0;">Gremlin Query Language Reference</h3>
+            <button class="btn btn-default" onclick="hideGremlinHelp()" style="font-size: 20px; line-height: 1; padding: 5px 10px;">&times;</button>
+          </div>
+          <div id="gremlin-help-content" style="max-height: calc(100vh - 150px); overflow-y: auto;">
+            <!-- Content will be populated by JavaScript -->
+          </div>
+        </div>
       </div>
   </body>
 </html>

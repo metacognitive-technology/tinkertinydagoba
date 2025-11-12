@@ -1,0 +1,70 @@
+{
+  "graph": {
+    "mode": "NORMAL",
+    "vertices": [
+      {
+        "~id": "DFW",
+        "~label": "airport",
+        "code": "DFW",
+        "name": "Dallas/Fort Worth International Airport",
+        "city": "Dallas-Fort Worth",
+        "state": "TX",
+        "country": "US",
+        "lat": 32.8968,
+        "lon": -97.0380
+      },
+      {
+        "~id": "LAX",
+        "~label": "airport",
+        "code": "LAX",
+        "name": "Los Angeles International Airport",
+        "city": "Los Angeles",
+        "state": "CA",
+        "country": "US",
+        "lat": 33.9416,
+        "lon": -118.4085
+      },
+      {
+        "~id": "JFK",
+        "~label": "airport",
+        "code": "JFK",
+        "name": "John F. Kennedy International Airport",
+        "city": "New York",
+        "state": "NY",
+        "country": "US",
+        "lat": 40.6413,
+        "lon": -73.7781
+      }
+    ],
+    "edges": [
+      {
+        "~id": "DFW-LAX-AA",
+        "~label": "route",
+        "~outV": "DFW",
+        "~inV": "LAX",
+        "airline": "AA"
+      },
+      {
+        "~id": "LAX-DFW-AA",
+        "~label": "route",
+        "~outV": "LAX",
+        "~inV": "DFW",
+        "airline": "AA"
+      },
+      {
+        "~id": "DFW-JFK-AA",
+        "~label": "route",
+        "~outV": "DFW",
+        "~inV": "JFK",
+        "airline": "AA"
+      },
+      {
+        "~id": "JFK-DFW-AA",
+        "~label": "route",
+        "~outV": "JFK",
+        "~inV": "DFW",
+        "airline": "AA"
+      }
+    ]
+  }
+}

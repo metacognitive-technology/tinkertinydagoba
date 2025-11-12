@@ -1,6 +1,6 @@
 // vis setup
 initVis = () => {
-  defaultOptions = {
+  window.defaultOptions = {
       interaction: {
         hover: true,
         navigationButtons: false,
@@ -35,7 +35,9 @@ initVis = () => {
         shape: "box",
         labelHighlightBold: true,
         font: {
-          face: 'arial'
+          face: 'arial',
+          size: 12,
+          multi: true
         },
         hidden: false,
         borderWidth: 1,
@@ -52,6 +54,11 @@ initVis = () => {
       },
       edges: {
         hidden: false,
+        font: {
+          size: 10,
+          multi: true,
+          align: 'middle'
+        },
         arrows: {
           to: {
             enabled: true,
@@ -70,9 +77,12 @@ initVis = () => {
       }
     }
 
-    
-  data = getScaleFreeNetwork(25)
-  window.network = new vis.Network($('#mynetwork')[0], data, defaultOptions);
+  // Only create default network if Dagoba graph hasn't been initialized yet
+  // Dagoba integration will create the network via renderDagobaToVis
+  if (!window.dagobaGraph) {
+    data = getScaleFreeNetwork(25)
+    window.network = new vis.Network($('#mynetwork')[0], data, window.defaultOptions);
+  }
 }
 
 // utilities
@@ -1005,6 +1015,61 @@ deleteSelections = () => {
       edgesToRemove.push(eid)
     })
   })
+  
+  // Delete from Dagoba graph database
+  if (window.dagobaGraph) {
+    // Track which edges are connected to nodes we're deleting
+    const edgesConnectedToDeletedNodes = new Set();
+    selections.nodes.forEach(nid => {
+      const ces = network.getConnectedEdges(nid);
+      ces.forEach(eid => edgesConnectedToDeletedNodes.add(eid));
+    });
+    
+    // Delete vertices first (this will also remove their connected edges)
+    selections.nodes.forEach(nid => {
+      try {
+        const nodeData = nds.get(nid);
+        if (nodeData && nodeData.dagobaId) {
+          // Find the vertex in Dagoba graph and remove it
+          const vertex = window.dagobaGraph.findVertexById(nodeData.dagobaId);
+          if (vertex) {
+            window.dagobaGraph.removeVertex(vertex);
+          }
+        }
+      } catch (e) {
+        console.warn('Error removing vertex from Dagoba graph:', nid, e);
+      }
+    });
+    
+    // Delete remaining edges that aren't connected to deleted nodes
+    _.uniq(edgesToRemove).forEach(eid => {
+      // Skip edges that were already removed by vertex deletion
+      if (!edgesConnectedToDeletedNodes.has(eid)) {
+        try {
+          const edgeData = eds.get(eid);
+          if (edgeData && edgeData.dagobaEdge) {
+            // Find the edge in Dagoba graph and remove it
+            const dagobaEdge = edgeData.dagobaEdge;
+            window.dagobaGraph.removeEdge(dagobaEdge);
+          }
+        } catch (e) {
+          console.warn('Error removing edge from Dagoba graph:', eid, e);
+        }
+      }
+    });
+    
+    // Save the graph after deletion
+    if (typeof saveGraph === 'function') {
+      saveGraph();
+    }
+    
+    // Re-render to reflect changes
+    if (typeof renderDagobaToVis === 'function') {
+      renderDagobaToVis();
+    }
+  }
+  
+  // Remove from visualization
   eds.remove(_.uniq(edgesToRemove))
   nds.remove(selections.nodes)
   network.unselectAll()

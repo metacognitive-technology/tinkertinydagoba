@@ -1,0 +1,170 @@
+{"id":"interstate:I-5","label":"interstate","type":"vertex","properties":{"name":[{"id":"interstate:I-5|name","value":"I-5"}],"number":[{"id":"interstate:I-5|number","value":5}],"direction":[{"id":"interstate:I-5|direction","value":"N-S"}]}}
+{"id":"interstate:I-10","label":"interstate","type":"vertex","properties":{"name":[{"id":"interstate:I-10|name","value":"I-10"}],"number":[{"id":"interstate:I-10|number","value":10}],"direction":[{"id":"interstate:I-10|direction","value":"E-W"}]}}
+{"id":"interstate:I-40","label":"interstate","type":"vertex","properties":{"name":[{"id":"interstate:I-40|name","value":"I-40"}],"number":[{"id":"interstate:I-40|number","value":40}],"direction":[{"id":"interstate:I-40|direction","value":"E-W"}]}}
+{"id":"interstate:I-70","label":"interstate","type":"vertex","properties":{"name":[{"id":"interstate:I-70|name","value":"I-70"}],"number":[{"id":"interstate:I-70|number","value":70}],"direction":[{"id":"interstate:I-70|direction","value":"E-W"}]}}
+{"id":"interstate:I-75","label":"interstate","type":"vertex","properties":{"name":[{"id":"interstate:I-75|name","value":"I-75"}],"number":[{"id":"interstate:I-75|number","value":75}],"direction":[{"id":"interstate:I-75|direction","value":"N-S"}]}}
+{"id":"interstate:I-80","label":"interstate","type":"vertex","properties":{"name":[{"id":"interstate:I-80|name","value":"I-80"}],"number":[{"id":"interstate:I-80|number","value":80}],"direction":[{"id":"interstate:I-80|direction","value":"E-W"}]}}
+{"id":"interstate:I-95","label":"interstate","type":"vertex","properties":{"name":[{"id":"interstate:I-95|name","value":"I-95"}],"number":[{"id":"interstate:I-95|number","value":95}],"direction":[{"id":"interstate:I-95|direction","value":"N-S"}]}}
+{"id":"city:Albuquerque_NM","label":"city","type":"vertex","properties":{"name":[{"id":"city:Albuquerque_NM|name","value":"Albuquerque"}],"state":[{"id":"city:Albuquerque_NM|state","value":"NM"}]}}
+{"id":"city:Amarillo_TX","label":"city","type":"vertex","properties":{"name":[{"id":"city:Amarillo_TX|name","value":"Amarillo"}],"state":[{"id":"city:Amarillo_TX|state","value":"TX"}]}}
+{"id":"city:Atlanta_GA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Atlanta_GA|name","value":"Atlanta"}],"state":[{"id":"city:Atlanta_GA|state","value":"GA"}]}}
+{"id":"city:Baltimore_MD","label":"city","type":"vertex","properties":{"name":[{"id":"city:Baltimore_MD|name","value":"Baltimore"}],"state":[{"id":"city:Baltimore_MD|state","value":"MD"}]}}
+{"id":"city:Barstow_CA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Barstow_CA|name","value":"Barstow"}],"state":[{"id":"city:Barstow_CA|state","value":"CA"}]}}
+{"id":"city:Baton_Rouge_LA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Baton_Rouge_LA|name","value":"Baton Rouge"}],"state":[{"id":"city:Baton_Rouge_LA|state","value":"LA"}]}}
+{"id":"city:Boston_MA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Boston_MA|name","value":"Boston"}],"state":[{"id":"city:Boston_MA|state","value":"MA"}]}}
+{"id":"city:Chattanooga_TN","label":"city","type":"vertex","properties":{"name":[{"id":"city:Chattanooga_TN|name","value":"Chattanooga"}],"state":[{"id":"city:Chattanooga_TN|state","value":"TN"}]}}
+{"id":"city:Cheyenne_WY","label":"city","type":"vertex","properties":{"name":[{"id":"city:Cheyenne_WY|name","value":"Cheyenne"}],"state":[{"id":"city:Cheyenne_WY|state","value":"WY"}]}}
+{"id":"city:Chicago_IL","label":"city","type":"vertex","properties":{"name":[{"id":"city:Chicago_IL|name","value":"Chicago"}],"state":[{"id":"city:Chicago_IL|state","value":"IL"}]}}
+{"id":"city:Cincinnati_OH","label":"city","type":"vertex","properties":{"name":[{"id":"city:Cincinnati_OH|name","value":"Cincinnati"}],"state":[{"id":"city:Cincinnati_OH|state","value":"OH"}]}}
+{"id":"city:Cleveland_OH","label":"city","type":"vertex","properties":{"name":[{"id":"city:Cleveland_OH|name","value":"Cleveland"}],"state":[{"id":"city:Cleveland_OH|state","value":"OH"}]}}
+{"id":"city:Columbus_OH","label":"city","type":"vertex","properties":{"name":[{"id":"city:Columbus_OH|name","value":"Columbus"}],"state":[{"id":"city:Columbus_OH|state","value":"OH"}]}}
+{"id":"city:Davenport_IA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Davenport_IA|name","value":"Davenport"}],"state":[{"id":"city:Davenport_IA|state","value":"IA"}]}}
+{"id":"city:Dayton_OH","label":"city","type":"vertex","properties":{"name":[{"id":"city:Dayton_OH|name","value":"Dayton"}],"state":[{"id":"city:Dayton_OH|state","value":"OH"}]}}
+{"id":"city:Daytona_Beach_FL","label":"city","type":"vertex","properties":{"name":[{"id":"city:Daytona_Beach_FL|name","value":"Daytona Beach"}],"state":[{"id":"city:Daytona_Beach_FL|state","value":"FL"}]}}
+{"id":"city:Denver_CO","label":"city","type":"vertex","properties":{"name":[{"id":"city:Denver_CO|name","value":"Denver"}],"state":[{"id":"city:Denver_CO|state","value":"CO"}]}}
+{"id":"city:Des_Moines_IA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Des_Moines_IA|name","value":"Des Moines"}],"state":[{"id":"city:Des_Moines_IA|state","value":"IA"}]}}
+{"id":"city:Detroit_MI","label":"city","type":"vertex","properties":{"name":[{"id":"city:Detroit_MI|name","value":"Detroit"}],"state":[{"id":"city:Detroit_MI|state","value":"MI"}]}}
+{"id":"city:El_Paso_TX","label":"city","type":"vertex","properties":{"name":[{"id":"city:El_Paso_TX|name","value":"El Paso"}],"state":[{"id":"city:El_Paso_TX|state","value":"TX"}]}}
+{"id":"city:Fayetteville_NC","label":"city","type":"vertex","properties":{"name":[{"id":"city:Fayetteville_NC|name","value":"Fayetteville"}],"state":[{"id":"city:Fayetteville_NC|state","value":"NC"}]}}
+{"id":"city:Flagstaff_AZ","label":"city","type":"vertex","properties":{"name":[{"id":"city:Flagstaff_AZ|name","value":"Flagstaff"}],"state":[{"id":"city:Flagstaff_AZ|state","value":"AZ"}]}}
+{"id":"city:Florence_SC","label":"city","type":"vertex","properties":{"name":[{"id":"city:Florence_SC|name","value":"Florence"}],"state":[{"id":"city:Florence_SC|state","value":"SC"}]}}
+{"id":"city:Fort_Lauderdale_FL","label":"city","type":"vertex","properties":{"name":[{"id":"city:Fort_Lauderdale_FL|name","value":"Fort Lauderdale"}],"state":[{"id":"city:Fort_Lauderdale_FL|state","value":"FL"}]}}
+{"id":"city:Gary_IN","label":"city","type":"vertex","properties":{"name":[{"id":"city:Gary_IN|name","value":"Gary"}],"state":[{"id":"city:Gary_IN|state","value":"IN"}]}}
+{"id":"city:Hagerstown_MD","label":"city","type":"vertex","properties":{"name":[{"id":"city:Hagerstown_MD|name","value":"Hagerstown"}],"state":[{"id":"city:Hagerstown_MD|state","value":"MD"}]}}
+{"id":"city:Houston_TX","label":"city","type":"vertex","properties":{"name":[{"id":"city:Houston_TX|name","value":"Houston"}],"state":[{"id":"city:Houston_TX|state","value":"TX"}]}}
+{"id":"city:Indianapolis_IN","label":"city","type":"vertex","properties":{"name":[{"id":"city:Indianapolis_IN|name","value":"Indianapolis"}],"state":[{"id":"city:Indianapolis_IN|state","value":"IN"}]}}
+{"id":"city:Jacksonville_FL","label":"city","type":"vertex","properties":{"name":[{"id":"city:Jacksonville_FL|name","value":"Jacksonville"}],"state":[{"id":"city:Jacksonville_FL|state","value":"FL"}]}}
+{"id":"city:Kansas_City_MO","label":"city","type":"vertex","properties":{"name":[{"id":"city:Kansas_City_MO|name","value":"Kansas City"}],"state":[{"id":"city:Kansas_City_MO|state","value":"MO"}]}}
+{"id":"city:Knoxville_TN","label":"city","type":"vertex","properties":{"name":[{"id":"city:Knoxville_TN|name","value":"Knoxville"}],"state":[{"id":"city:Knoxville_TN|state","value":"TN"}]}}
+{"id":"city:Las_Cruces_NM","label":"city","type":"vertex","properties":{"name":[{"id":"city:Las_Cruces_NM|name","value":"Las Cruces"}],"state":[{"id":"city:Las_Cruces_NM|state","value":"NM"}]}}
+{"id":"city:Lexington_KY","label":"city","type":"vertex","properties":{"name":[{"id":"city:Lexington_KY|name","value":"Lexington"}],"state":[{"id":"city:Lexington_KY|state","value":"KY"}]}}
+{"id":"city:Little_Rock_AR","label":"city","type":"vertex","properties":{"name":[{"id":"city:Little_Rock_AR|name","value":"Little Rock"}],"state":[{"id":"city:Little_Rock_AR|state","value":"AR"}]}}
+{"id":"city:Los_Angeles_CA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Los_Angeles_CA|name","value":"Los Angeles"}],"state":[{"id":"city:Los_Angeles_CA|state","value":"CA"}]}}
+{"id":"city:Memphis_TN","label":"city","type":"vertex","properties":{"name":[{"id":"city:Memphis_TN|name","value":"Memphis"}],"state":[{"id":"city:Memphis_TN|state","value":"TN"}]}}
+{"id":"city:Miami_FL","label":"city","type":"vertex","properties":{"name":[{"id":"city:Miami_FL|name","value":"Miami"}],"state":[{"id":"city:Miami_FL|state","value":"FL"}]}}
+{"id":"city:Mobile_AL","label":"city","type":"vertex","properties":{"name":[{"id":"city:Mobile_AL|name","value":"Mobile"}],"state":[{"id":"city:Mobile_AL|state","value":"AL"}]}}
+{"id":"city:Nashville_TN","label":"city","type":"vertex","properties":{"name":[{"id":"city:Nashville_TN|name","value":"Nashville"}],"state":[{"id":"city:Nashville_TN|state","value":"TN"}]}}
+{"id":"city:New_Haven_CT","label":"city","type":"vertex","properties":{"name":[{"id":"city:New_Haven_CT|name","value":"New Haven"}],"state":[{"id":"city:New_Haven_CT|state","value":"CT"}]}}
+{"id":"city:New_Orleans_LA","label":"city","type":"vertex","properties":{"name":[{"id":"city:New_Orleans_LA|name","value":"New Orleans"}],"state":[{"id":"city:New_Orleans_LA|state","value":"LA"}]}}
+{"id":"city:New_York_City_NY","label":"city","type":"vertex","properties":{"name":[{"id":"city:New_York_City_NY|name","value":"New York City"}],"state":[{"id":"city:New_York_City_NY|state","value":"NY"}]}}
+{"id":"city:Newark_NJ","label":"city","type":"vertex","properties":{"name":[{"id":"city:Newark_NJ|name","value":"Newark"}],"state":[{"id":"city:Newark_NJ|state","value":"NJ"}]}}
+{"id":"city:Oklahoma_City_OK","label":"city","type":"vertex","properties":{"name":[{"id":"city:Oklahoma_City_OK|name","value":"Oklahoma City"}],"state":[{"id":"city:Oklahoma_City_OK|state","value":"OK"}]}}
+{"id":"city:Omaha_NE","label":"city","type":"vertex","properties":{"name":[{"id":"city:Omaha_NE|name","value":"Omaha"}],"state":[{"id":"city:Omaha_NE|state","value":"NE"}]}}
+{"id":"city:Pensacola_FL","label":"city","type":"vertex","properties":{"name":[{"id":"city:Pensacola_FL|name","value":"Pensacola"}],"state":[{"id":"city:Pensacola_FL|state","value":"FL"}]}}
+{"id":"city:Philadelphia_PA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Philadelphia_PA|name","value":"Philadelphia"}],"state":[{"id":"city:Philadelphia_PA|state","value":"PA"}]}}
+{"id":"city:Phoenix_AZ","label":"city","type":"vertex","properties":{"name":[{"id":"city:Phoenix_AZ|name","value":"Phoenix"}],"state":[{"id":"city:Phoenix_AZ|state","value":"AZ"}]}}
+{"id":"city:Pittsburgh_PA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Pittsburgh_PA|name","value":"Pittsburgh"}],"state":[{"id":"city:Pittsburgh_PA|state","value":"PA"}]}}
+{"id":"city:Portland_ME","label":"city","type":"vertex","properties":{"name":[{"id":"city:Portland_ME|name","value":"Portland"}],"state":[{"id":"city:Portland_ME|state","value":"ME"}]}}
+{"id":"city:Portland_OR","label":"city","type":"vertex","properties":{"name":[{"id":"city:Portland_OR|name","value":"Portland"}],"state":[{"id":"city:Portland_OR|state","value":"OR"}]}}
+{"id":"city:Portsmouth_NH","label":"city","type":"vertex","properties":{"name":[{"id":"city:Portsmouth_NH|name","value":"Portsmouth"}],"state":[{"id":"city:Portsmouth_NH|state","value":"NH"}]}}
+{"id":"city:Providence_RI","label":"city","type":"vertex","properties":{"name":[{"id":"city:Providence_RI|name","value":"Providence"}],"state":[{"id":"city:Providence_RI|state","value":"RI"}]}}
+{"id":"city:Raleigh_NC","label":"city","type":"vertex","properties":{"name":[{"id":"city:Raleigh_NC|name","value":"Raleigh"}],"state":[{"id":"city:Raleigh_NC|state","value":"NC"}]}}
+{"id":"city:Reno_NV","label":"city","type":"vertex","properties":{"name":[{"id":"city:Reno_NV|name","value":"Reno"}],"state":[{"id":"city:Reno_NV|state","value":"NV"}]}}
+{"id":"city:Richmond_VA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Richmond_VA|name","value":"Richmond"}],"state":[{"id":"city:Richmond_VA|state","value":"VA"}]}}
+{"id":"city:Sacramento_CA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Sacramento_CA|name","value":"Sacramento"}],"state":[{"id":"city:Sacramento_CA|state","value":"CA"}]}}
+{"id":"city:Salt_Lake_City_UT","label":"city","type":"vertex","properties":{"name":[{"id":"city:Salt_Lake_City_UT|name","value":"Salt Lake City"}],"state":[{"id":"city:Salt_Lake_City_UT|state","value":"UT"}]}}
+{"id":"city:San_Antonio_TX","label":"city","type":"vertex","properties":{"name":[{"id":"city:San_Antonio_TX|name","value":"San Antonio"}],"state":[{"id":"city:San_Antonio_TX|state","value":"TX"}]}}
+{"id":"city:San_Diego_CA","label":"city","type":"vertex","properties":{"name":[{"id":"city:San_Diego_CA|name","value":"San Diego"}],"state":[{"id":"city:San_Diego_CA|state","value":"CA"}]}}
+{"id":"city:San_Francisco_CA","label":"city","type":"vertex","properties":{"name":[{"id":"city:San_Francisco_CA|name","value":"San Francisco"}],"state":[{"id":"city:San_Francisco_CA|state","value":"CA"}]}}
+{"id":"city:Sault_Ste_Marie_MI","label":"city","type":"vertex","properties":{"name":[{"id":"city:Sault_Ste_Marie_MI|name","value":"Sault Ste. Marie"}],"state":[{"id":"city:Sault_Ste_Marie_MI|state","value":"MI"}]}}
+{"id":"city:Savannah_GA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Savannah_GA|name","value":"Savannah"}],"state":[{"id":"city:Savannah_GA|state","value":"GA"}]}}
+{"id":"city:Seattle_WA","label":"city","type":"vertex","properties":{"name":[{"id":"city:Seattle_WA|name","value":"Seattle"}],"state":[{"id":"city:Seattle_WA|state","value":"WA"}]}}
+{"id":"city:St_Louis_MO","label":"city","type":"vertex","properties":{"name":[{"id":"city:St_Louis_MO|name","value":"St. Louis"}],"state":[{"id":"city:St_Louis_MO|state","value":"MO"}]}}
+{"id":"city:Tallahassee_FL","label":"city","type":"vertex","properties":{"name":[{"id":"city:Tallahassee_FL|name","value":"Tallahassee"}],"state":[{"id":"city:Tallahassee_FL|state","value":"FL"}]}}
+{"id":"city:Tampa_FL","label":"city","type":"vertex","properties":{"name":[{"id":"city:Tampa_FL|name","value":"Tampa"}],"state":[{"id":"city:Tampa_FL|state","value":"FL"}]}}
+{"id":"city:Toledo_OH","label":"city","type":"vertex","properties":{"name":[{"id":"city:Toledo_OH|name","value":"Toledo"}],"state":[{"id":"city:Toledo_OH|state","value":"OH"}]}}
+{"id":"city:Topeka_KS","label":"city","type":"vertex","properties":{"name":[{"id":"city:Topeka_KS|name","value":"Topeka"}],"state":[{"id":"city:Topeka_KS|state","value":"KS"}]}}
+{"id":"city:Tucson_AZ","label":"city","type":"vertex","properties":{"name":[{"id":"city:Tucson_AZ|name","value":"Tucson"}],"state":[{"id":"city:Tucson_AZ|state","value":"AZ"}]}}
+{"id":"city:Washington_DC","label":"city","type":"vertex","properties":{"name":[{"id":"city:Washington_DC|name","value":"Washington"}],"state":[{"id":"city:Washington_DC|state","value":"DC"}]}}
+{"id":"city:West_Palm_Beach_FL","label":"city","type":"vertex","properties":{"name":[{"id":"city:West_Palm_Beach_FL|name","value":"West Palm Beach"}],"state":[{"id":"city:West_Palm_Beach_FL|state","value":"FL"}]}}
+{"id":"city:Wheeling_WV","label":"city","type":"vertex","properties":{"name":[{"id":"city:Wheeling_WV|name","value":"Wheeling"}],"state":[{"id":"city:Wheeling_WV|state","value":"WV"}]}}
+{"id":"city:Wilmington_DE","label":"city","type":"vertex","properties":{"name":[{"id":"city:Wilmington_DE|name","value":"Wilmington"}],"state":[{"id":"city:Wilmington_DE|state","value":"DE"}]}}
+{"id":"city:Wilmington_NC","label":"city","type":"vertex","properties":{"name":[{"id":"city:Wilmington_NC|name","value":"Wilmington"}],"state":[{"id":"city:Wilmington_NC|state","value":"NC"}]}}
+{"id":"city:Winston_Salem_NC","label":"city","type":"vertex","properties":{"name":[{"id":"city:Winston_Salem_NC|name","value":"Winston-Salem"}],"state":[{"id":"city:Winston_Salem_NC|state","value":"NC"}]}}
+{"id":"city:Youngstown_OH","label":"city","type":"vertex","properties":{"name":[{"id":"city:Youngstown_OH|name","value":"Youngstown"}],"state":[{"id":"city:Youngstown_OH|state","value":"OH"}]}}
+{"id":"edge:I-5:0","label":"serves","type":"edge","outV":"interstate:I-5","outVLabel":"interstate","inV":"city:San_Diego_CA","inVLabel":"city","properties":{"sequence":0}}
+{"id":"edge:I-5:1","label":"serves","type":"edge","outV":"interstate:I-5","outVLabel":"interstate","inV":"city:Los_Angeles_CA","inVLabel":"city","properties":{"sequence":1}}
+{"id":"edge:I-5:2","label":"serves","type":"edge","outV":"interstate:I-5","outVLabel":"interstate","inV":"city:Sacramento_CA","inVLabel":"city","properties":{"sequence":2}}
+{"id":"edge:I-5:3","label":"serves","type":"edge","outV":"interstate:I-5","outVLabel":"interstate","inV":"city:Portland_OR","inVLabel":"city","properties":{"sequence":3}}
+{"id":"edge:I-5:4","label":"serves","type":"edge","outV":"interstate:I-5","outVLabel":"interstate","inV":"city:Seattle_WA","inVLabel":"city","properties":{"sequence":4}}
+{"id":"edge:I-10:0","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:Los_Angeles_CA","inVLabel":"city","properties":{"sequence":0}}
+{"id":"edge:I-10:1","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:Phoenix_AZ","inVLabel":"city","properties":{"sequence":1}}
+{"id":"edge:I-10:2","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:Tucson_AZ","inVLabel":"city","properties":{"sequence":2}}
+{"id":"edge:I-10:3","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:Las_Cruces_NM","inVLabel":"city","properties":{"sequence":3}}
+{"id":"edge:I-10:4","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:El_Paso_TX","inVLabel":"city","properties":{"sequence":4}}
+{"id":"edge:I-10:5","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:San_Antonio_TX","inVLabel":"city","properties":{"sequence":5}}
+{"id":"edge:I-10:6","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:Houston_TX","inVLabel":"city","properties":{"sequence":6}}
+{"id":"edge:I-10:7","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:Baton_Rouge_LA","inVLabel":"city","properties":{"sequence":7}}
+{"id":"edge:I-10:8","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:New_Orleans_LA","inVLabel":"city","properties":{"sequence":8}}
+{"id":"edge:I-10:9","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:Mobile_AL","inVLabel":"city","properties":{"sequence":9}}
+{"id":"edge:I-10:10","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:Pensacola_FL","inVLabel":"city","properties":{"sequence":10}}
+{"id":"edge:I-10:11","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:Tallahassee_FL","inVLabel":"city","properties":{"sequence":11}}
+{"id":"edge:I-10:12","label":"serves","type":"edge","outV":"interstate:I-10","outVLabel":"interstate","inV":"city:Jacksonville_FL","inVLabel":"city","properties":{"sequence":12}}
+{"id":"edge:I-40:0","label":"serves","type":"edge","outV":"interstate:I-40","outVLabel":"interstate","inV":"city:Barstow_CA","inVLabel":"city","properties":{"sequence":0}}
+{"id":"edge:I-40:1","label":"serves","type":"edge","outV":"interstate:I-40","outVLabel":"interstate","inV":"city:Flagstaff_AZ","inVLabel":"city","properties":{"sequence":1}}
+{"id":"edge:I-40:2","label":"serves","type":"edge","outV":"interstate:I-40","outVLabel":"interstate","inV":"city:Albuquerque_NM","inVLabel":"city","properties":{"sequence":2}}
+{"id":"edge:I-40:3","label":"serves","type":"edge","outV":"interstate:I-40","outVLabel":"interstate","inV":"city:Amarillo_TX","inVLabel":"city","properties":{"sequence":3}}
+{"id":"edge:I-40:4","label":"serves","type":"edge","outV":"interstate:I-40","outVLabel":"interstate","inV":"city:Oklahoma_City_OK","inVLabel":"city","properties":{"sequence":4}}
+{"id":"edge:I-40:5","label":"serves","type":"edge","outV":"interstate:I-40","outVLabel":"interstate","inV":"city:Little_Rock_AR","inVLabel":"city","properties":{"sequence":5}}
+{"id":"edge:I-40:6","label":"serves","type":"edge","outV":"interstate:I-40","outVLabel":"interstate","inV":"city:Memphis_TN","inVLabel":"city","properties":{"sequence":6}}
+{"id":"edge:I-40:7","label":"serves","type":"edge","outV":"interstate:I-40","outVLabel":"interstate","inV":"city:Nashville_TN","inVLabel":"city","properties":{"sequence":7}}
+{"id":"edge:I-40:8","label":"serves","type":"edge","outV":"interstate:I-40","outVLabel":"interstate","inV":"city:Knoxville_TN","inVLabel":"city","properties":{"sequence":8}}
+{"id":"edge:I-40:9","label":"serves","type":"edge","outV":"interstate:I-40","outVLabel":"interstate","inV":"city:Winston_Salem_NC","inVLabel":"city","properties":{"sequence":9}}
+{"id":"edge:I-40:10","label":"serves","type":"edge","outV":"interstate:I-40","outVLabel":"interstate","inV":"city:Raleigh_NC","inVLabel":"city","properties":{"sequence":10}}
+{"id":"edge:I-40:11","label":"serves","type":"edge","outV":"interstate:I-40","outVLabel":"interstate","inV":"city:Wilmington_NC","inVLabel":"city","properties":{"sequence":11}}
+{"id":"edge:I-70:0","label":"serves","type":"edge","outV":"interstate:I-70","outVLabel":"interstate","inV":"city:Denver_CO","inVLabel":"city","properties":{"sequence":0}}
+{"id":"edge:I-70:1","label":"serves","type":"edge","outV":"interstate:I-70","outVLabel":"interstate","inV":"city:Topeka_KS","inVLabel":"city","properties":{"sequence":1}}
+{"id":"edge:I-70:2","label":"serves","type":"edge","outV":"interstate:I-70","outVLabel":"interstate","inV":"city:Kansas_City_MO","inVLabel":"city","properties":{"sequence":2}}
+{"id":"edge:I-70:3","label":"serves","type":"edge","outV":"interstate:I-70","outVLabel":"interstate","inV":"city:St_Louis_MO","inVLabel":"city","properties":{"sequence":3}}
+{"id":"edge:I-70:4","label":"serves","type":"edge","outV":"interstate:I-70","outVLabel":"interstate","inV":"city:Indianapolis_IN","inVLabel":"city","properties":{"sequence":4}}
+{"id":"edge:I-70:5","label":"serves","type":"edge","outV":"interstate:I-70","outVLabel":"interstate","inV":"city:Columbus_OH","inVLabel":"city","properties":{"sequence":5}}
+{"id":"edge:I-70:6","label":"serves","type":"edge","outV":"interstate:I-70","outVLabel":"interstate","inV":"city:Wheeling_WV","inVLabel":"city","properties":{"sequence":6}}
+{"id":"edge:I-70:7","label":"serves","type":"edge","outV":"interstate:I-70","outVLabel":"interstate","inV":"city:Pittsburgh_PA","inVLabel":"city","properties":{"sequence":7}}
+{"id":"edge:I-70:8","label":"serves","type":"edge","outV":"interstate:I-70","outVLabel":"interstate","inV":"city:Hagerstown_MD","inVLabel":"city","properties":{"sequence":8}}
+{"id":"edge:I-70:9","label":"serves","type":"edge","outV":"interstate:I-70","outVLabel":"interstate","inV":"city:Baltimore_MD","inVLabel":"city","properties":{"sequence":9}}
+{"id":"edge:I-75:0","label":"serves","type":"edge","outV":"interstate:I-75","outVLabel":"interstate","inV":"city:Miami_FL","inVLabel":"city","properties":{"sequence":0}}
+{"id":"edge:I-75:1","label":"serves","type":"edge","outV":"interstate:I-75","outVLabel":"interstate","inV":"city:Fort_Lauderdale_FL","inVLabel":"city","properties":{"sequence":1}}
+{"id":"edge:I-75:2","label":"serves","type":"edge","outV":"interstate:I-75","outVLabel":"interstate","inV":"city:Tampa_FL","inVLabel":"city","properties":{"sequence":2}}
+{"id":"edge:I-75:3","label":"serves","type":"edge","outV":"interstate:I-75","outVLabel":"interstate","inV":"city:Atlanta_GA","inVLabel":"city","properties":{"sequence":3}}
+{"id":"edge:I-75:4","label":"serves","type":"edge","outV":"interstate:I-75","outVLabel":"interstate","inV":"city:Chattanooga_TN","inVLabel":"city","properties":{"sequence":4}}
+{"id":"edge:I-75:5","label":"serves","type":"edge","outV":"interstate:I-75","outVLabel":"interstate","inV":"city:Knoxville_TN","inVLabel":"city","properties":{"sequence":5}}
+{"id":"edge:I-75:6","label":"serves","type":"edge","outV":"interstate:I-75","outVLabel":"interstate","inV":"city:Lexington_KY","inVLabel":"city","properties":{"sequence":6}}
+{"id":"edge:I-75:7","label":"serves","type":"edge","outV":"interstate:I-75","outVLabel":"interstate","inV":"city:Cincinnati_OH","inVLabel":"city","properties":{"sequence":7}}
+{"id":"edge:I-75:8","label":"serves","type":"edge","outV":"interstate:I-75","outVLabel":"interstate","inV":"city:Dayton_OH","inVLabel":"city","properties":{"sequence":8}}
+{"id":"edge:I-75:9","label":"serves","type":"edge","outV":"interstate:I-75","outVLabel":"interstate","inV":"city:Toledo_OH","inVLabel":"city","properties":{"sequence":9}}
+{"id":"edge:I-75:10","label":"serves","type":"edge","outV":"interstate:I-75","outVLabel":"interstate","inV":"city:Detroit_MI","inVLabel":"city","properties":{"sequence":10}}
+{"id":"edge:I-75:11","label":"serves","type":"edge","outV":"interstate:I-75","outVLabel":"interstate","inV":"city:Sault_Ste_Marie_MI","inVLabel":"city","properties":{"sequence":11}}
+{"id":"edge:I-80:0","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:San_Francisco_CA","inVLabel":"city","properties":{"sequence":0}}
+{"id":"edge:I-80:1","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:Sacramento_CA","inVLabel":"city","properties":{"sequence":1}}
+{"id":"edge:I-80:2","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:Reno_NV","inVLabel":"city","properties":{"sequence":2}}
+{"id":"edge:I-80:3","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:Salt_Lake_City_UT","inVLabel":"city","properties":{"sequence":3}}
+{"id":"edge:I-80:4","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:Cheyenne_WY","inVLabel":"city","properties":{"sequence":4}}
+{"id":"edge:I-80:5","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:Omaha_NE","inVLabel":"city","properties":{"sequence":5}}
+{"id":"edge:I-80:6","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:Des_Moines_IA","inVLabel":"city","properties":{"sequence":6}}
+{"id":"edge:I-80:7","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:Davenport_IA","inVLabel":"city","properties":{"sequence":7}}
+{"id":"edge:I-80:8","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:Chicago_IL","inVLabel":"city","properties":{"sequence":8}}
+{"id":"edge:I-80:9","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:Gary_IN","inVLabel":"city","properties":{"sequence":9}}
+{"id":"edge:I-80:10","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:Toledo_OH","inVLabel":"city","properties":{"sequence":10}}
+{"id":"edge:I-80:11","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:Cleveland_OH","inVLabel":"city","properties":{"sequence":11}}
+{"id":"edge:I-80:12","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:Youngstown_OH","inVLabel":"city","properties":{"sequence":12}}
+{"id":"edge:I-80:13","label":"serves","type":"edge","outV":"interstate:I-80","outVLabel":"interstate","inV":"city:New_York_City_NY","inVLabel":"city","properties":{"sequence":13}}
+{"id":"edge:I-95:0","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Miami_FL","inVLabel":"city","properties":{"sequence":0}}
+{"id":"edge:I-95:1","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Fort_Lauderdale_FL","inVLabel":"city","properties":{"sequence":1}}
+{"id":"edge:I-95:2","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:West_Palm_Beach_FL","inVLabel":"city","properties":{"sequence":2}}
+{"id":"edge:I-95:3","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Daytona_Beach_FL","inVLabel":"city","properties":{"sequence":3}}
+{"id":"edge:I-95:4","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Jacksonville_FL","inVLabel":"city","properties":{"sequence":4}}
+{"id":"edge:I-95:5","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Savannah_GA","inVLabel":"city","properties":{"sequence":5}}
+{"id":"edge:I-95:6","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Florence_SC","inVLabel":"city","properties":{"sequence":6}}
+{"id":"edge:I-95:7","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Fayetteville_NC","inVLabel":"city","properties":{"sequence":7}}
+{"id":"edge:I-95:8","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Richmond_VA","inVLabel":"city","properties":{"sequence":8}}
+{"id":"edge:I-95:9","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Washington_DC","inVLabel":"city","properties":{"sequence":9}}
+{"id":"edge:I-95:10","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Baltimore_MD","inVLabel":"city","properties":{"sequence":10}}
+{"id":"edge:I-95:11","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Wilmington_DE","inVLabel":"city","properties":{"sequence":11}}
+{"id":"edge:I-95:12","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Philadelphia_PA","inVLabel":"city","properties":{"sequence":12}}
+{"id":"edge:I-95:13","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Newark_NJ","inVLabel":"city","properties":{"sequence":13}}
+{"id":"edge:I-95:14","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:New_York_City_NY","inVLabel":"city","properties":{"sequence":14}}
+{"id":"edge:I-95:15","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:New_Haven_CT","inVLabel":"city","properties":{"sequence":15}}
+{"id":"edge:I-95:16","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Providence_RI","inVLabel":"city","properties":{"sequence":16}}
+{"id":"edge:I-95:17","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Boston_MA","inVLabel":"city","properties":{"sequence":17}}
+{"id":"edge:I-95:18","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Portsmouth_NH","inVLabel":"city","properties":{"sequence":18}}
+{"id":"edge:I-95:19","label":"serves","type":"edge","outV":"interstate:I-95","outVLabel":"interstate","inV":"city:Portland_ME","inVLabel":"city","properties":{"sequence":19}}

@@ -1,0 +1,29 @@
+{
+    "graph": {
+        "mode":"NORMAL",
+        "vertices": [
+            {
+                "name": "Alice",
+                "age": 31,
+                "_id": "1",
+                "_type": "vertex"
+            },
+            {
+                "name": "Bob",
+                "age": 27,
+                "_id": "2",
+                "_type": "vertex"
+            }       
+        ],
+        "edges": [
+            {
+                "type": "friends",
+                "_id": "3",
+                "_type": "edge",
+                "_outV": "1",
+                "_inV": "2",
+                "_label": "knows"
+            }
+        ]
+    }
+}
