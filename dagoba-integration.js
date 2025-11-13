@@ -203,6 +203,7 @@ dagobaToVisNetwork = (graph, highlightNodes = [], highlightEdges = []) => {
       to: toId,
       label: edgeLabel,
       color: isHighlighted ? { color: '#FF0000', highlight: '#FF0000' } : { color: '#848484' },
+      width: isHighlighted ? 3 : 1, // Wider for highlighted edges
       arrows: 'to',
       title: edgeTooltip,
       dagobaEdge: edge,
@@ -412,17 +413,13 @@ executeQuery = () => {
       if (r && typeof r === 'object') {
         // Check if this is an edge result (has _out and _in properties directly, or is an edge object)
         if (r._out && r._in && r._label) {
-          // This is an edge
+          // This is an edge - only highlight the edge, not the vertices
           highlightEdges.push({
             _out: r._out._id || r._out,
             _in: r._in._id || r._in,
             _label: r._label
           });
-          // Also highlight the connected vertices
-          const outId = r._out._id || r._out;
-          const inId = r._in._id || r._in;
-          if (outId && !highlightNodes.includes(outId)) highlightNodes.push(outId);
-          if (inId && !highlightNodes.includes(inId)) highlightNodes.push(inId);
+          // Do NOT highlight the connected vertices for edge queries
         } else if (r._id) {
           // This is a vertex
           highlightNodes.push(r._id);
@@ -518,29 +515,43 @@ updateQueryHighlights = (highlightNodes = [], highlightEdges = []) => {
     nodesDataSet.update({ id: node.id, ...updates });
   });
   
-  // Update edge colors for highlights
+  // Update edge colors and widths for highlights
   const allEdges = edgesDataSet.get();
   allEdges.forEach(edge => {
     let isHighlighted = false;
     if (edge.dagobaEdge) {
       const edgeOutId = edge.dagobaEdge._out?._id || (typeof edge.dagobaEdge._out === 'string' ? edge.dagobaEdge._out : null);
       const edgeInId = edge.dagobaEdge._in?._id || (typeof edge.dagobaEdge._in === 'string' ? edge.dagobaEdge._in : null);
+      const edgeLabel = edge.dagobaEdge._label || edge.label;
       
       isHighlighted = highlightEdges.some(e => {
         if (typeof e === 'string') {
-          return e === edge.label;
+          return e === edgeLabel;
         }
         if (e._out && e._in) {
-          return (e._out === edgeOutId && e._in === edgeInId);
+          // Match by out/in IDs and optionally label
+          const outMatch = e._out === edgeOutId;
+          const inMatch = e._in === edgeInId;
+          const labelMatch = !e._label || e._label === edgeLabel;
+          return outMatch && inMatch && labelMatch;
         }
         return false;
       });
     }
     
-    edgesDataSet.update({
+    const updates = {
       id: edge.id,
       color: isHighlighted ? { color: '#FF0000', highlight: '#FF0000' } : { color: '#848484' }
-    });
+    };
+    
+    // Make highlighted edges wider
+    if (isHighlighted) {
+      updates.width = 3; // Wider for highlighted edges
+    } else {
+      updates.width = 1; // Default width
+    }
+    
+    edgesDataSet.update(updates);
   });
 };
 
@@ -685,17 +696,12 @@ saveCurrentQuery = () => {
     return;
   }
   
-  bootbox.prompt({
-    title: 'Save Query',
-    inputType: 'text',
-    placeholder: 'Enter query name',
-    callback: (name) => {
-      if (name) {
-        saveQuery(name, queryText);
-        bootbox.alert('Query saved successfully!');
-      }
-    }
-  });
+  // Use native prompt instead of bootbox
+  const name = prompt('Enter a name for this query:', '');
+  if (name && name.trim()) {
+    saveQuery(name.trim(), queryText);
+    alert('Query saved successfully!');
+  }
 };
 
 // Save graph to localStorage
@@ -1319,10 +1325,10 @@ showGremlinHelp = () => {
   });
   
   const helpContent = `
-    <h4>Gremlin Query Language - Supported Operations</h4>
-    <p>This implementation supports a subset of the Gremlin graph query language. All queries must start with <code>v()</code> or <code>e()</code>.</p>
+    <h4>Gremlin Query Language - Comprehensive Reference</h4>
+    <p>This implementation supports a comprehensive subset of the Gremlin graph query language based on Apache TinkerPop. All queries must start with <code>v()</code> or <code>e()</code>.</p>
     
-    <h5>Query Starters</h5>
+    <h5>1. Core Start Steps</h5>
     <table class="table table-bordered table-condensed">
       <thead>
         <tr>
@@ -1365,7 +1371,7 @@ showGremlinHelp = () => {
       </tbody>
     </table>
     
-    <h5>Traversal Operations</h5>
+    <h5>2. Navigation Steps</h5>
     <table class="table table-bordered table-condensed">
       <thead>
         <tr>
@@ -1406,19 +1412,44 @@ showGremlinHelp = () => {
           <td><code>v("david").both("father")</code></td>
         </tr>
         <tr>
-          <td><code>bothE()</code></td>
-          <td>Get edges in both directions</td>
+          <td><code>outE([labels])</code></td>
+          <td>Outgoing edges</td>
+          <td><code>v("jesus").outE("father")</code></td>
+        </tr>
+        <tr>
+          <td><code>inE([labels])</code></td>
+          <td>Incoming edges</td>
+          <td><code>v("jesus").inE("mother")</code></td>
+        </tr>
+        <tr>
+          <td><code>bothE([labels])</code></td>
+          <td>Edges in both directions</td>
           <td><code>v("david").bothE()</code></td>
         </tr>
         <tr>
+          <td><code>outV()</code></td>
+          <td>From edge to outgoing vertex</td>
+          <td><code>e().outV()</code></td>
+        </tr>
+        <tr>
+          <td><code>inV()</code></td>
+          <td>From edge to incoming vertex</td>
+          <td><code>e().inV()</code></td>
+        </tr>
+        <tr>
+          <td><code>bothV()</code></td>
+          <td>From edge to both vertices (returns array)</td>
+          <td><code>e().bothV()</code></td>
+        </tr>
+        <tr>
           <td><code>otherV()</code></td>
-          <td>Get the other vertex of an edge</td>
+          <td>From edge to the "other" vertex</td>
           <td><code>e().otherV()</code></td>
         </tr>
       </tbody>
     </table>
     
-    <h5>Filtering Operations</h5>
+    <h5>3. Filter Steps</h5>
     <table class="table table-bordered table-condensed">
       <thead>
         <tr>
@@ -1428,6 +1459,26 @@ showGremlinHelp = () => {
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td><code>has(key, value)</code></td>
+          <td>Filter by property</td>
+          <td><code>v().has("royal", true)</code></td>
+        </tr>
+        <tr>
+          <td><code>has({key: value})</code></td>
+          <td>Filter by multiple properties</td>
+          <td><code>v().has({royal: true, generation: 20})</code></td>
+        </tr>
+        <tr>
+          <td><code>hasLabel(label)</code></td>
+          <td>Filter edges by label</td>
+          <td><code>e().hasLabel("father")</code></td>
+        </tr>
+        <tr>
+          <td><code>hasId(id)</code></td>
+          <td>Filter by ID</td>
+          <td><code>v().hasId("jesus")</code></td>
+        </tr>
         <tr>
           <td><code>filter({property: value})</code></td>
           <td>Filter by property match</td>
@@ -1444,19 +1495,44 @@ showGremlinHelp = () => {
           <td><code>v().where({maternal: true})</code></td>
         </tr>
         <tr>
+          <td><code>is(predicate)</code></td>
+          <td>Simple predicate filter (supports predicates)</td>
+          <td><code>v().values("generation").is(gt(20))</code></td>
+        </tr>
+        <tr>
+          <td><code>has(key, predicate)</code></td>
+          <td>Filter by property with predicate</td>
+          <td><code>v().has("generation", gt(20))</code></td>
+        </tr>
+        <tr>
+          <td><code>and(condition1, condition2, ...)</code></td>
+          <td>Boolean AND</td>
+          <td><code>v().and({royal: true}, {generation: 20})</code></td>
+        </tr>
+        <tr>
+          <td><code>or(condition1, condition2, ...)</code></td>
+          <td>Boolean OR</td>
+          <td><code>v().or({royal: true}, {maternal: true})</code></td>
+        </tr>
+        <tr>
+          <td><code>not(condition)</code></td>
+          <td>Boolean NOT</td>
+          <td><code>v().not({royal: true})</code></td>
+        </tr>
+        <tr>
+          <td><code>simplePath()</code></td>
+          <td>Ensure no repeated vertices in path</td>
+          <td><code>v("abraham").out().out().simplePath()</code></td>
+        </tr>
+        <tr>
           <td><code>dedup()</code></td>
           <td>Remove duplicates</td>
           <td><code>v().out().dedup()</code></td>
         </tr>
-        <tr>
-          <td><code>log()</code></td>
-          <td>Log item to log pane (passes through unchanged)</td>
-          <td><code>v().out().log()</code></td>
-        </tr>
       </tbody>
     </table>
     
-    <h5>Property & Path Operations</h5>
+    <h5>4. Map / Transform Steps</h5>
     <table class="table table-bordered table-condensed">
       <thead>
         <tr>
@@ -1472,24 +1548,29 @@ showGremlinHelp = () => {
           <td><code>v("jesus").property("name")</code></td>
         </tr>
         <tr>
+          <td><code>values([keys...])</code></td>
+          <td>Extract property values</td>
+          <td><code>v("jesus").values("name", "generation")</code></td>
+        </tr>
+        <tr>
+          <td><code>id()</code></td>
+          <td>Get vertex/edge ID</td>
+          <td><code>v().id()</code></td>
+        </tr>
+        <tr>
+          <td><code>label()</code></td>
+          <td>Get edge label</td>
+          <td><code>e().label()</code></td>
+        </tr>
+        <tr>
           <td><code>path()</code></td>
           <td>Get traversal path</td>
           <td><code>v("abraham").out().out().path()</code></td>
         </tr>
-        <tr>
-          <td><code>as("label")</code></td>
-          <td>Label current step</td>
-          <td><code>v("jesus").as("start").in()</code></td>
-        </tr>
-        <tr>
-          <td><code>back("label")</code></td>
-          <td>Go back to labeled step</td>
-          <td><code>v("jesus").as("start").in().back("start")</code></td>
-        </tr>
       </tbody>
     </table>
     
-    <h5>Ordering & Limiting</h5>
+    <h5>5. Ordering & Pagination</h5>
     <table class="table table-bordered table-condensed">
       <thead>
         <tr>
@@ -1511,7 +1592,7 @@ showGremlinHelp = () => {
         </tr>
         <tr>
           <td><code>take(n)</code></td>
-          <td>Limit results to n items</td>
+          <td>Limit to first n items</td>
           <td><code>v().take(10)</code></td>
         </tr>
         <tr>
@@ -1519,10 +1600,106 @@ showGremlinHelp = () => {
           <td>Alias for take</td>
           <td><code>v().limit(5)</code></td>
         </tr>
+        <tr>
+          <td><code>skip(n)</code></td>
+          <td>Skip first n items</td>
+          <td><code>v().skip(5).take(10)</code></td>
+        </tr>
+        <tr>
+          <td><code>range(start, end)</code></td>
+          <td>Limit to range [start, end)</td>
+          <td><code>v().range(5, 15)</code></td>
+        </tr>
+        <tr>
+          <td><code>tail(n)</code></td>
+          <td>Get last n items</td>
+          <td><code>v().tail(5)</code></td>
+        </tr>
       </tbody>
     </table>
     
-    <h5>Query Examples (Click to Copy)</h5>
+    <h5>6. Aggregation Steps</h5>
+    <table class="table table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th>Step</th>
+          <th>Purpose</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>count()</code></td>
+          <td>Count results</td>
+          <td><code>v().count()</code></td>
+        </tr>
+        <tr>
+          <td><code>sum([key])</code></td>
+          <td>Sum numeric values</td>
+          <td><code>v().values("generation").sum()</code></td>
+        </tr>
+        <tr>
+          <td><code>min([key])</code></td>
+          <td>Minimum value</td>
+          <td><code>v().values("generation").min()</code></td>
+        </tr>
+        <tr>
+          <td><code>max([key])</code></td>
+          <td>Maximum value</td>
+          <td><code>v().values("generation").max()</code></td>
+        </tr>
+        <tr>
+          <td><code>mean([key])</code></td>
+          <td>Average value</td>
+          <td><code>v().values("generation").mean()</code></td>
+        </tr>
+        <tr>
+          <td><code>avg([key])</code></td>
+          <td>Alias for mean</td>
+          <td><code>v().values("generation").avg()</code></td>
+        </tr>
+        <tr>
+          <td><code>group([key])</code></td>
+          <td>Group by key</td>
+          <td><code>v().group("generation")</code></td>
+        </tr>
+        <tr>
+          <td><code>groupCount([key])</code></td>
+          <td>Group and count</td>
+          <td><code>v().groupCount("generation")</code></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <h5>7. Side-Effect Steps</h5>
+    <table class="table table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th>Step</th>
+          <th>Purpose</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>as("label")</code></td>
+          <td>Label current step for later reference</td>
+          <td><code>v("jesus").as("start").in()</code></td>
+        </tr>
+        <tr>
+          <td><code>back("label")</code></td>
+          <td>Go back to labeled step</td>
+          <td><code>v("jesus").as("start").in().back("start")</code></td>
+        </tr>
+        <tr>
+          <td><code>log()</code></td>
+          <td>Log item to log pane (passes through unchanged)</td>
+          <td><code>v().out().log()</code></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <h5>8. Query Examples (Click to Copy)</h5>
     <div class="well" data-query='v({name: "Jesus Christ"})' onclick="copyToQueryEditor(this.getAttribute('data-query'))">
       <strong>Find Jesus:</strong><br>
       <code>v({name: "Jesus Christ"})</code>
@@ -1531,8 +1708,20 @@ showGremlinHelp = () => {
       <strong>All ancestors of Jesus:</strong><br>
       <code>v({name: "Jesus Christ"}).in().in().in()</code>
     </div>
+    <div class="well" data-query='v().has("royal", true)' onclick="copyToQueryEditor(this.getAttribute('data-query'))">
+      <strong>Royal line using has():</strong><br>
+      <code>v().has("royal", true)</code>
+    </div>
+    <div class="well" data-query='v().has("generation", gt(20))' onclick="copyToQueryEditor(this.getAttribute('data-query'))">
+      <strong>Generation greater than 20:</strong><br>
+      <code>v().has("generation", gt(20))</code>
+    </div>
+    <div class="well" data-query='v().has("generation", between(10, 30))' onclick="copyToQueryEditor(this.getAttribute('data-query'))">
+      <strong>Generation between 10 and 30:</strong><br>
+      <code>v().has("generation", between(10, 30))</code>
+    </div>
     <div class="well" data-query='v().filter({royal: true})' onclick="copyToQueryEditor(this.getAttribute('data-query'))">
-      <strong>Royal line only:</strong><br>
+      <strong>Royal line using filter():</strong><br>
       <code>v().filter({royal: true})</code>
     </div>
     <div class="well" data-query='v().filter({maternal: true})' onclick="copyToQueryEditor(this.getAttribute('data-query'))">
@@ -1551,18 +1740,126 @@ showGremlinHelp = () => {
       <strong>Ordered by generation:</strong><br>
       <code>v().filter({royal: true}).order().by("generation")</code>
     </div>
-    <div class="well" data-query='v().take(5)' onclick="copyToQueryEditor(this.getAttribute('data-query'))">
-      <strong>First 5 vertices:</strong><br>
-      <code>v().take(5)</code>
+    <div class="well" data-query='v().count()' onclick="copyToQueryEditor(this.getAttribute('data-query'))">
+      <strong>Count all vertices:</strong><br>
+      <code>v().count()</code>
+    </div>
+    <div class="well" data-query='v().values("generation").max()' onclick="copyToQueryEditor(this.getAttribute('data-query'))">
+      <strong>Maximum generation:</strong><br>
+      <code>v().values("generation").max()</code>
+    </div>
+    <div class="well" data-query='v().groupCount("generation")' onclick="copyToQueryEditor(this.getAttribute('data-query'))">
+      <strong>Count by generation:</strong><br>
+      <code>v().groupCount("generation")</code>
+    </div>
+    <div class="well" data-query='v().skip(5).take(10)' onclick="copyToQueryEditor(this.getAttribute('data-query'))">
+      <strong>Pagination (skip 5, take 10):</strong><br>
+      <code>v().skip(5).take(10)</code>
+    </div>
+    <div class="well" data-query='e().outV().has("royal", true)' onclick="copyToQueryEditor(this.getAttribute('data-query'))">
+      <strong>Edges from royal vertices:</strong><br>
+      <code>e().outV().has("royal", true)</code>
     </div>
     
-    <h5>Notes</h5>
+    <h5>9. Notes</h5>
     <ul>
       <li>All queries are executed when you click "Execute" - no need to add <code>.run()</code></li>
       <li>Object filters use JSON syntax: <code>{property: value}</code></li>
       <li>String values can use single or double quotes</li>
       <li>Query results are highlighted in red on the graph</li>
       <li>Edge queries return edge objects and highlight connected vertices</li>
+      <li>Aggregation steps (count, sum, min, max, mean, group, groupCount) consume all items and return a single result</li>
+      <li>Steps work with both vertices and edges where applicable</li>
+    </ul>
+    
+    <h5>10. Step Modulators</h5>
+    <p>Modulators are used to modify steps:</p>
+    <ul>
+      <li><code>by()</code> - Used with <code>order()</code>, <code>group()</code>, etc. to specify the key or property</li>
+      <li><code>as()</code> - Label traversers for later reference</li>
+    </ul>
+    
+    <h5>11. Predicates</h5>
+    <p>Predicates are helper functions used primarily in <code>has()</code>, <code>where()</code>, and <code>is()</code>:</p>
+    <table class="table table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th>Predicate</th>
+          <th>Description</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>eq(x)</code></td>
+          <td>Equals</td>
+          <td><code>v().has("generation", eq(20))</code></td>
+        </tr>
+        <tr>
+          <td><code>neq(x)</code></td>
+          <td>Not equals</td>
+          <td><code>v().has("generation", neq(20))</code></td>
+        </tr>
+        <tr>
+          <td><code>lt(x)</code></td>
+          <td>Less than</td>
+          <td><code>v().has("generation", lt(20))</code></td>
+        </tr>
+        <tr>
+          <td><code>lte(x)</code></td>
+          <td>Less than or equal</td>
+          <td><code>v().has("generation", lte(20))</code></td>
+        </tr>
+        <tr>
+          <td><code>gt(x)</code></td>
+          <td>Greater than</td>
+          <td><code>v().has("generation", gt(20))</code></td>
+        </tr>
+        <tr>
+          <td><code>gte(x)</code></td>
+          <td>Greater than or equal</td>
+          <td><code>v().has("generation", gte(20))</code></td>
+        </tr>
+        <tr>
+          <td><code>inside(a, b)</code></td>
+          <td>Value is inside range (a &lt; value &lt; b)</td>
+          <td><code>v().has("generation", inside(10, 30))</code></td>
+        </tr>
+        <tr>
+          <td><code>outside(a, b)</code></td>
+          <td>Value is outside range (value &lt; a || value &gt; b)</td>
+          <td><code>v().has("generation", outside(10, 30))</code></td>
+        </tr>
+        <tr>
+          <td><code>between(a, b)</code></td>
+          <td>Value is between a and b (a &lt;= value &lt;= b)</td>
+          <td><code>v().has("generation", between(10, 30))</code></td>
+        </tr>
+        <tr>
+          <td><code>within(collection)</code></td>
+          <td>Value is in collection</td>
+          <td><code>v().has("name", within(["Jesus", "David", "Abraham"]))</code></td>
+        </tr>
+        <tr>
+          <td><code>without(collection)</code></td>
+          <td>Value is not in collection</td>
+          <td><code>v().has("name", without(["Jesus", "David"]))</code></td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>Usage examples:</strong></p>
+    <ul>
+      <li><code>v().has("generation", gt(20))</code> - Vertices with generation greater than 20</li>
+      <li><code>v().values("generation").is(lt(30))</code> - Generation values less than 30</li>
+      <li><code>v().has("generation", between(10, 30))</code> - Generation between 10 and 30 (inclusive)</li>
+      <li><code>v().has("name", within(["Jesus", "David"]))</code> - Names in the list</li>
+    </ul>
+    
+    <h5>12. Reference</h5>
+    <p>This implementation is based on Apache TinkerPop's Gremlin. For the complete reference, see:</p>
+    <ul>
+      <li><a href="https://tinkerpop.apache.org/docs/current/reference/" target="_blank">TinkerPop Reference Documentation</a></li>
+      <li>Not all TinkerPop steps are implemented - this is a focused subset for in-memory graph queries</li>
     </ul>
   `;
   

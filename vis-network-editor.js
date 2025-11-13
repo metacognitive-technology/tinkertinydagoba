@@ -831,13 +831,408 @@ networkToPreJSON = () => {
 }
 
 loadNetworkFromJSON = (json) => {
-  var eds = network.edgesHandler.body.data.edges.getDataSet()
-  var nds = network.nodesHandler.body.data.nodes.getDataSet()
-  eds.clear()
-  nds.clear()
-  nds.add(json.nodes)
-  eds.add(json.edges)
-  network.redraw()
+  // If Dagoba graph exists, add elements to it instead of just updating visualization
+  if (window.dagobaGraph && json.nodes && json.edges) {
+    try {
+      // Get existing vertex IDs to prevent collisions
+      const existingVertexIds = new Set(window.dagobaGraph.vertices.map(v => v._id));
+      const existingEdgeIds = new Set();
+      window.dagobaGraph.edges.forEach(e => {
+        const edgeKey = `${e._out._id}_${e._in._id}_${e._label}`;
+        existingEdgeIds.add(edgeKey);
+      });
+      
+      // Find the highest numeric ID to start transforming from
+      let maxNumericId = 0;
+      existingVertexIds.forEach(id => {
+        const numId = parseInt(id);
+        if (!isNaN(numId) && numId > maxNumericId) {
+          maxNumericId = numId;
+        }
+      });
+      
+      // Create ID mapping for imported vertices
+      const idMap = new Map();
+      let nextId = maxNumericId + 1;
+      
+      // Store vis-network attributes for imported nodes and edges
+      const nodeAttributes = new Map(); // Maps Dagoba ID -> vis-network node attributes
+      const edgeAttributes = new Map(); // Maps edge key -> vis-network edge attributes
+      
+      // Convert vis-network nodes to Dagoba vertices
+      const importedVertices = json.nodes.map(node => {
+        // Use dagobaId if available, otherwise use node.id or generate new ID
+        let originalId = node.dagobaId || node.id || `node_${node.id}`;
+        let newId = originalId;
+        
+        // Transform ID if collision detected
+        if (existingVertexIds.has(String(originalId))) {
+          while (existingVertexIds.has(String(nextId)) || idMap.has(String(nextId))) {
+            nextId++;
+          }
+          newId = nextId++;
+          idMap.set(String(originalId), String(newId));
+          console.log(`Transformed vertex ID: ${originalId} -> ${newId}`);
+        } else {
+          idMap.set(String(originalId), String(newId));
+        }
+        
+        // Store all vis-network attributes for this node
+        const visAttributes = {};
+        const excludeKeys = ['id', 'dagobaId', 'properties'];
+        Object.keys(node).forEach(key => {
+          if (!excludeKeys.includes(key)) {
+            visAttributes[key] = node[key];
+          }
+        });
+        nodeAttributes.set(String(newId), visAttributes);
+        
+        const vertex = { _id: String(newId) };
+        
+        // Copy properties from node (excluding vis-network specific properties)
+        Object.keys(node).forEach(key => {
+          if (key !== 'id' && key !== 'x' && key !== 'y' && key !== 'physics' && 
+              key !== 'fixed' && key !== 'hidden' && key !== 'color' && key !== 'shape' &&
+              key !== 'title' && key !== 'dagobaId' && key !== 'label' &&
+              key !== 'size' && key !== 'font' && key !== 'borderWidth' && key !== 'borderColor' &&
+              key !== 'shadow' && key !== 'mass' && key !== 'chosen' && key !== 'properties') {
+            vertex[key] = node[key];
+          }
+        });
+        
+        // If node has a label, use it as name if name doesn't exist
+        if (node.label && !vertex.name) {
+          vertex.name = node.label;
+        }
+        
+        vertex.imported = true;
+        return vertex;
+      });
+      
+      // Add imported vertices first (edges need vertices to exist in the graph)
+      let verticesAdded = 0;
+      let verticesSkipped = 0;
+      importedVertices.forEach(v => {
+        try {
+          window.dagobaGraph.addVertex(v);
+          verticesAdded++;
+        } catch (e) {
+          console.warn('Error adding vertex:', v._id, e);
+          verticesSkipped++;
+        }
+      });
+      
+      // Now process edges (vertices are now in the graph)
+      const importedEdges = json.edges.map(edge => {
+        // Map vis-network node IDs to Dagoba vertex IDs
+        const fromVisId = edge.from;
+        const toVisId = edge.to;
+        
+        // Find the corresponding Dagoba IDs using the mapping we created
+        // First, find the node in the imported JSON to get its original ID
+        const fromNode = json.nodes.find(n => n.id === fromVisId);
+        const toNode = json.nodes.find(n => n.id === toVisId);
+        
+        let fromDagobaId = null;
+        let toDagobaId = null;
+        
+        if (fromNode) {
+          // Node is in the import - use the mapped ID
+          const originalFromId = fromNode.dagobaId || fromNode.id || `node_${fromNode.id}`;
+          // Check if this ID was transformed (collision handling)
+          const mappedId = idMap.get(String(originalFromId));
+          fromDagobaId = mappedId ? String(mappedId) : String(originalFromId);
+          
+          // Verify the vertex exists in the graph
+          const testVertex = window.dagobaGraph.findVertexById(String(fromDagobaId));
+          if (!testVertex) {
+            console.warn(`Node ${fromVisId} is in import but vertex ${fromDagobaId} not found in graph. Original ID: ${originalFromId}, Mapped: ${mappedId}`);
+          }
+        } else {
+          // Node not in import - check if it exists in the graph
+          // Try multiple strategies to find the Dagoba ID
+          let foundId = null;
+          
+          // Strategy 1: Check vis-network for existing node with dagobaId
+          if (window.network) {
+            try {
+              const existingNode = window.network.body.data.nodes.get(fromVisId);
+              if (existingNode && existingNode.dagobaId) {
+                foundId = existingNode.dagobaId;
+              }
+            } catch (e) {
+              // Node doesn't exist in vis-network
+            }
+          }
+          
+          // Strategy 2: Check if the vis ID itself exists as a Dagoba vertex ID
+          if (!foundId) {
+            const testVertex = window.dagobaGraph.findVertexById(String(fromVisId));
+            if (testVertex) {
+              foundId = String(fromVisId);
+            }
+          }
+          
+          // Strategy 3: Try to find by numeric conversion
+          if (!foundId && !isNaN(fromVisId)) {
+            const testVertex = window.dagobaGraph.findVertexById(String(parseInt(fromVisId)));
+            if (testVertex) {
+              foundId = String(parseInt(fromVisId));
+            }
+          }
+          
+          fromDagobaId = foundId || String(fromVisId);
+        }
+        
+        if (toNode) {
+          // Node is in the import - use the mapped ID
+          const originalToId = toNode.dagobaId || toNode.id || `node_${toNode.id}`;
+          // Check if this ID was transformed (collision handling)
+          const mappedId = idMap.get(String(originalToId));
+          toDagobaId = mappedId ? String(mappedId) : String(originalToId);
+          
+          // Verify the vertex exists in the graph
+          const testVertex = window.dagobaGraph.findVertexById(String(toDagobaId));
+          if (!testVertex) {
+            console.warn(`Node ${toVisId} is in import but vertex ${toDagobaId} not found in graph. Original ID: ${originalToId}, Mapped: ${mappedId}`);
+          }
+        } else {
+          // Node not in import - check if it exists in the graph
+          // Try multiple strategies to find the Dagoba ID
+          let foundId = null;
+          
+          // Strategy 1: Check vis-network for existing node with dagobaId
+          if (window.network) {
+            try {
+              const existingNode = window.network.body.data.nodes.get(toVisId);
+              if (existingNode && existingNode.dagobaId) {
+                foundId = existingNode.dagobaId;
+              }
+            } catch (e) {
+              // Node doesn't exist in vis-network
+            }
+          }
+          
+          // Strategy 2: Check if the vis ID itself exists as a Dagoba vertex ID
+          if (!foundId) {
+            const testVertex = window.dagobaGraph.findVertexById(String(toVisId));
+            if (testVertex) {
+              foundId = String(toVisId);
+            }
+          }
+          
+          // Strategy 3: Try to find by numeric conversion
+          if (!foundId && !isNaN(toVisId)) {
+            const testVertex = window.dagobaGraph.findVertexById(String(parseInt(toVisId)));
+            if (testVertex) {
+              foundId = String(parseInt(toVisId));
+            }
+          }
+          
+          toDagobaId = foundId || String(toVisId);
+        }
+        
+        // Ensure vertices exist (they should from the import above, or already exist)
+        // Try multiple ID formats
+        let fromVertex = window.dagobaGraph.findVertexById(String(fromDagobaId));
+        let toVertex = window.dagobaGraph.findVertexById(String(toDagobaId));
+        
+        // If not found, try alternative ID formats
+        if (!fromVertex) {
+          // Try as number
+          if (!isNaN(fromDagobaId)) {
+            fromVertex = window.dagobaGraph.findVertexById(String(parseInt(fromDagobaId)));
+          }
+          // Try searching all vertices by checking if any have this as their vis ID
+          if (!fromVertex && window.network) {
+            const allNodes = window.network.body.data.nodes.get();
+            const matchingNode = allNodes.find(n => String(n.id) === String(fromVisId));
+            if (matchingNode && matchingNode.dagobaId) {
+              fromVertex = window.dagobaGraph.findVertexById(String(matchingNode.dagobaId));
+            }
+          }
+        }
+        
+        if (!toVertex) {
+          // Try as number
+          if (!isNaN(toDagobaId)) {
+            toVertex = window.dagobaGraph.findVertexById(String(parseInt(toDagobaId)));
+          }
+          // Try searching all vertices by checking if any have this as their vis ID
+          if (!toVertex && window.network) {
+            const allNodes = window.network.body.data.nodes.get();
+            const matchingNode = allNodes.find(n => String(n.id) === String(toVisId));
+            if (matchingNode && matchingNode.dagobaId) {
+              toVertex = window.dagobaGraph.findVertexById(String(matchingNode.dagobaId));
+            }
+          }
+        }
+        
+        if (!fromVertex || !toVertex) {
+          // Log available vertex IDs for debugging
+          const availableIds = window.dagobaGraph.vertices.slice(0, 20).map(v => v._id);
+          console.warn('Edge references missing vertices, skipping:', edge, 
+            'from vis ID:', fromVisId, 'to vis ID:', toVisId,
+            'from Dagoba ID:', fromDagobaId, 'to Dagoba ID:', toDagobaId,
+            'fromVertex exists:', !!fromVertex, 'toVertex exists:', !!toVertex,
+            'Sample available vertex IDs:', availableIds);
+          return null;
+        }
+        
+        // Update the Dagoba IDs to the actual found IDs
+        fromDagobaId = fromVertex._id;
+        toDagobaId = toVertex._id;
+        
+        const label = edge.label || edge._label || 'edge';
+        const edgeKey = `${fromDagobaId}_${toDagobaId}_${label}`;
+        
+        // Check for edge collision
+        if (existingEdgeIds.has(edgeKey)) {
+          console.warn(`Edge collision detected: ${edgeKey}, skipping`);
+          return null;
+        }
+        
+        // Store all vis-network attributes for this edge
+        const visEdgeAttributes = {};
+        const excludeEdgeKeys = ['id', 'from', 'to', 'dagobaEdge', 'properties'];
+        Object.keys(edge).forEach(key => {
+          if (!excludeEdgeKeys.includes(key)) {
+            visEdgeAttributes[key] = edge[key];
+          }
+        });
+        edgeAttributes.set(edgeKey, visEdgeAttributes);
+        
+        // Create edge object with _out, _in, _label (Dagoba expects IDs as strings)
+        const dagobaEdge = {
+          _out: String(fromDagobaId),
+          _in: String(toDagobaId),
+          _label: label
+        };
+        
+        // Copy edge properties (excluding vis-network specific properties)
+        Object.keys(edge).forEach(key => {
+          if (key !== 'id' && key !== 'from' && key !== 'to' && key !== 'label' &&
+              key !== 'color' && key !== 'width' && key !== 'arrows' && key !== 'title' &&
+              key !== 'dagobaEdge' && key !== 'properties' && key !== '_out' && key !== '_in' && key !== '_label' &&
+              key !== 'style' && key !== 'font' && key !== 'smooth' && key !== 'shadow' &&
+              key !== 'chosen' && key !== 'selectionWidth' && key !== 'dashes') {
+            dagobaEdge[key] = edge[key];
+          }
+        });
+        
+        return dagobaEdge;
+      }).filter(e => e !== null);
+      
+      // Add edges (vertices are already in the graph)
+      let edgesAdded = 0;
+      let edgesSkipped = 0;
+      importedEdges.forEach(e => {
+        try {
+          window.dagobaGraph.addEdge(e);
+          edgesAdded++;
+        } catch (err) {
+          console.warn('Error adding edge:', e, err);
+          edgesSkipped++;
+        }
+      });
+      
+      // Re-render from Dagoba graph
+      if (typeof renderDagobaToVis === 'function') {
+        renderDagobaToVis();
+        
+        // Apply preserved vis-network attributes to imported nodes and edges after a short delay
+        if (window.network && (nodeAttributes.size > 0 || edgeAttributes.size > 0)) {
+          setTimeout(() => {
+            const nodesDataSet = window.network.body.data.nodes;
+            const edgesDataSet = window.network.body.data.edges;
+            const allNodes = nodesDataSet.get();
+            const allEdges = edgesDataSet.get();
+            
+            // Apply node attributes
+            allNodes.forEach(node => {
+              if (node.dagobaId && nodeAttributes.has(node.dagobaId)) {
+                const attrs = nodeAttributes.get(node.dagobaId);
+                const update = { id: node.id };
+                
+                // Apply all preserved attributes
+                Object.keys(attrs).forEach(key => {
+                  update[key] = attrs[key];
+                });
+                
+                // Ensure physics is disabled if position is set
+                if (attrs.x !== undefined && attrs.y !== undefined) {
+                  update.physics = false;
+                }
+                
+                nodesDataSet.update(update);
+              }
+            });
+            
+            // Apply edge attributes
+            allEdges.forEach(edge => {
+              if (edge.dagobaEdge) {
+                const dagobaEdge = edge.dagobaEdge;
+                const fromId = dagobaEdge._out?._id || (typeof dagobaEdge._out === 'string' ? dagobaEdge._out : null);
+                const toId = dagobaEdge._in?._id || (typeof dagobaEdge._in === 'string' ? dagobaEdge._in : null);
+                const label = dagobaEdge._label || edge.label;
+                
+                if (fromId && toId) {
+                  const edgeKey = `${fromId}_${toId}_${label}`;
+                  if (edgeAttributes.has(edgeKey)) {
+                    const attrs = edgeAttributes.get(edgeKey);
+                    const update = { id: edge.id };
+                    
+                    // Apply all preserved attributes
+                    Object.keys(attrs).forEach(key => {
+                      update[key] = attrs[key];
+                    });
+                    
+                    edgesDataSet.update(update);
+                  }
+                }
+              }
+            });
+          }, 100);
+        }
+      } else {
+        // Fallback: update vis-network directly
+        var eds = network.edgesHandler.body.data.edges.getDataSet()
+        var nds = network.nodesHandler.body.data.nodes.getDataSet()
+        nds.add(json.nodes)
+        eds.add(json.edges)
+        network.redraw()
+      }
+      
+      // Save the graph
+      if (typeof saveGraph === 'function') {
+        saveGraph();
+      }
+      
+      let message = `Imported ${verticesAdded} vertices and ${edgesAdded} edges into the database.`;
+      if (verticesSkipped > 0 || edgesSkipped > 0) {
+        message += ` (Skipped: ${verticesSkipped} vertices, ${edgesSkipped} edges)`;
+      }
+      alert(message);
+    } catch (e) {
+      console.error('Error importing to Dagoba:', e);
+      alert('Error importing to database: ' + e.message);
+      // Fallback to original behavior
+      var eds = network.edgesHandler.body.data.edges.getDataSet()
+      var nds = network.nodesHandler.body.data.nodes.getDataSet()
+      nds.add(json.nodes)
+      eds.add(json.edges)
+      network.redraw()
+    }
+  } else {
+    // Original behavior: just update visualization
+    var eds = network.edgesHandler.body.data.edges.getDataSet()
+    var nds = network.nodesHandler.body.data.nodes.getDataSet()
+    eds.clear()
+    nds.clear()
+    nds.add(json.nodes)
+    eds.add(json.edges)
+    network.redraw()
+  }
 }
 
 saveNetworkJSONToFile = (fn) => {

@@ -378,22 +378,34 @@ Dagoba.addPipetype('inAllN', function(graph, args, gremlin, state) {
 
 Dagoba.addPipetype('property', function(graph, args, gremlin, state) {
   if(!gremlin) return 'pull'                                      // query initialization
-  gremlin.result = gremlin.vertex[args[0]]
+  
+  // Get property from vertex or edge
+  const item = Dagoba.getItem ? Dagoba.getItem(gremlin) : gremlin.vertex;
+  gremlin.result = item[args[0]]
   return gremlin.result == null ? false : gremlin                 // undefined or null properties kill the gremlin
 })
 
 Dagoba.addPipetype('unique', function(graph, args, gremlin, state) {
   if(!gremlin) return 'pull'                                      // query initialization
-  if(state[gremlin.vertex._id]) return 'pull'                     // we've seen this gremlin, so get another instead
-  state[gremlin.vertex._id] = true
+  
+  // Get unique ID for vertex or edge
+  const itemId = Dagoba.getItemId ? Dagoba.getItemId(gremlin) : 
+                 (gremlin.vertex ? `vertex_${gremlin.vertex._id}` : 
+                  `edge_${gremlin.edge ? gremlin.edge._out._id + '_' + gremlin.edge._in._id + '_' + gremlin.edge._label : 'unknown'}`);
+  
+  if(state[itemId]) return 'pull'                     // we've seen this item, so get another instead
+  state[itemId] = true
   return gremlin
 })
 
 Dagoba.addPipetype('filter', function(graph, args, gremlin, state) {
   if(!gremlin) return 'pull'                                      // query initialization
 
+  // Get the item (vertex or edge) to filter
+  const item = Dagoba.getItem ? Dagoba.getItem(gremlin) : gremlin.vertex;
+
   if(typeof args[0] == 'object')                                  // filter by object
-    return Dagoba.objectFilter(gremlin.vertex, args[0])
+    return Dagoba.objectFilter(item, args[0])
          ? gremlin : 'pull'
 
   if(typeof args[0] != 'function') {
@@ -401,7 +413,7 @@ Dagoba.addPipetype('filter', function(graph, args, gremlin, state) {
     return gremlin                                                // keep things moving
   }
 
-  if(!args[0](gremlin.vertex, gremlin)) return 'pull'             // gremlin fails filter function
+  if(!args[0](item, gremlin)) return 'pull'             // gremlin fails filter function
   return gremlin
 })
 
