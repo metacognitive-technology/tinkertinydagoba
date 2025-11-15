@@ -888,20 +888,6 @@ Dagoba.addPipetype('log', function(graph, args, gremlin, state) {
     
     if (args.length === 0) return gremlin;
     
-    // hasLabel('label') - check edge label
-    if (args.length === 1 && typeof args[0] === 'string' && !gremlin.vertex && (gremlin.edge || (gremlin.result && gremlin.result._label))) {
-      const label = gremlin.edge ? gremlin.edge._label : gremlin.result._label;
-      if (label !== args[0]) return 'pull';
-      return gremlin;
-    }
-    
-    // hasId(id) - check ID
-    if (args.length === 1 && (typeof args[0] === 'string' || typeof args[0] === 'number')) {
-      const id = gremlin.vertex ? gremlin.vertex._id : (gremlin.edge ? gremlin.edge._id : null);
-      if (String(id) !== String(args[0])) return 'pull';
-      return gremlin;
-    }
-    
     // has(key, predicate) - e.g., has('age', gt(30))
     if (args.length === 2 && args[1] && typeof args[1] === 'object' && args[1].type) {
       const propertyValue = item[args[0]];
@@ -915,17 +901,44 @@ Dagoba.addPipetype('log', function(graph, args, gremlin, state) {
       return gremlin;
     }
     
-    // has(key, value) or has({key: value})
-    let condition;
+    // has(key, value) - e.g., has('name', 'John')
     if (args.length === 2) {
-      condition = { [args[0]]: args[1] };
-    } else if (args.length === 1 && typeof args[0] === 'object') {
-      condition = args[0];
-    } else {
+      const condition = { [args[0]]: args[1] };
+      if (!Dagoba.objectFilter(item, condition)) return 'pull';
       return gremlin;
     }
     
-    if (!Dagoba.objectFilter(item, condition)) return 'pull';
+    // has({key: value}) - object form
+    if (args.length === 1 && typeof args[0] === 'object' && !Array.isArray(args[0])) {
+      const condition = args[0];
+      if (!Dagoba.objectFilter(item, condition)) return 'pull';
+      return gremlin;
+    }
+    
+    // has('propertyName') - check if property exists (not null/undefined)
+    if (args.length === 1 && typeof args[0] === 'string') {
+      const propertyName = args[0];
+      const propertyValue = item[propertyName];
+      // Filter out if property doesn't exist or is null/undefined
+      if (propertyValue === undefined || propertyValue === null) return 'pull';
+      return gremlin;
+    }
+    
+    // hasLabel('label') - check edge label (when explicitly called as hasLabel or when on edge)
+    if (args.length === 1 && typeof args[0] === 'string' && !gremlin.vertex && (gremlin.edge || (gremlin.result && gremlin.result._label))) {
+      const label = gremlin.edge ? gremlin.edge._label : gremlin.result._label;
+      if (label !== args[0]) return 'pull';
+      return gremlin;
+    }
+    
+    // hasId(id) - check ID (when explicitly called as hasId or when arg is a number)
+    if (args.length === 1 && typeof args[0] === 'number') {
+      const id = gremlin.vertex ? gremlin.vertex._id : (gremlin.edge ? gremlin.edge._id : null);
+      if (String(id) !== String(args[0])) return 'pull';
+      return gremlin;
+    }
+    
+    // Default: pass through
     return gremlin;
   });
 

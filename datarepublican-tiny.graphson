@@ -1,0 +1,324 @@
+{
+  "graph": {
+    "mode": "NORMAL",
+    "vertices": [
+      {
+        "id": "user_datarepublican",
+        "label": "User",
+        "properties": {
+          "handle": [{ "id": "prop_handle", "value": "DataRepublican" }],
+          "bio": [{ "id": "prop_bio", "value": "Tool builder, endorsed by Elon Musk & Charlie Kirk" }],
+          "overall_sentiment": [{ "id": "prop_sent", "value": "fiercely anti-establishment, populist-conservative, urgent, conspiratorial, reformist" }]
+        }
+      },
+      {
+        "id": "theme_ngo_infiltration",
+        "label": "Theme",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "NGO & Foundation Infiltration" }],
+          "sentiment": [{ "id": "prop_sent", "value": "deeply negative, views as treasonous" }],
+          "focus_level": [{ "id": "prop_focus", "value": "Core Focus" }]
+        }
+      },
+      {
+        "id": "theme_color_revolution",
+        "label": "Theme",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Globalist Color Revolution" }],
+          "sentiment": [{ "id": "prop_sent", "value": "alarmist, anti-globalist, pro-sovereignty" }]
+        }
+      },
+      {
+        "id": "theme_immigration_economy",
+        "label": "Theme",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Immigration, Economy, Institutions" }],
+          "sentiment": [{ "id": "prop_sent", "value": "skeptical, anti-intervention, pro-America First" }]
+        }
+      },
+      {
+        "id": "theme_conservative_support",
+        "label": "Theme",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Support for Conservative Figures & Resistance" }],
+          "sentiment": [{ "id": "prop_sent", "value": "positive toward MAGA, anti-leftist" }]
+        }
+      },
+      {
+        "id": "org_mweg",
+        "label": "Organization",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Mormon Women for Ethical Government (MWEG)" }],
+          "alleged_role": [{ "id": "prop_role", "value": "Front for State Dept-backed political coup" }]
+        }
+      },
+      {
+        "id": "org_mediators_foundation",
+        "label": "Organization",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Mediators Foundation" }]
+        }
+      },
+      {
+        "id": "org_imip",
+        "label": "Organization",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Inter-Movement Impact Project (IMIP)" }]
+        }
+      },
+      {
+        "id": "org_bamn",
+        "label": "Organization",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "By Any Means Necessary (BAMN)" }],
+          "ideology": [{ "id": "prop_ideo", "value": "Communist/Trotskyite" }]
+        }
+      },
+      {
+        "id": "org_ford_foundation",
+        "label": "Funder",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Ford Foundation" }]
+        }
+      },
+      {
+        "id": "org_afl_cio",
+        "label": "Organization",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "AFL-CIO" }]
+        }
+      },
+      {
+        "id": "org_usaid",
+        "label": "GovernmentAgency",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "USAID" }],
+          "alleged_activity": [{ "id": "prop_act", "value": "Ex-employees coordinating via Signal for color revolution" }]
+        }
+      },
+      {
+        "id": "org_johns_hopkins",
+        "label": "Institution",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Johns Hopkins University" }]
+        }
+      },
+      {
+        "id": "doc_one_common_purpose",
+        "label": "Document",
+        "properties": {
+          "title": [{ "id": "prop_title", "value": "One Common Purpose" }],
+          "authors": [{ "id": "prop_auth", "value": "Eric Liu, Stephen Heintz" }],
+          "purpose": [{ "id": "prop_purp", "value": "Blueprint to eliminate populists via RCV, court-packing, censorship" }]
+        }
+      },
+      {
+        "id": "funder_rockefeller",
+        "label": "Funder",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Rockefeller" }]
+        }
+      },
+      {
+        "id": "funder_soros",
+        "label": "Funder",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "George Soros" }]
+        }
+      },
+      {
+        "id": "person_charlie_kirk",
+        "label": "Person",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Charlie Kirk" }]
+        }
+      },
+      {
+        "id": "person_mike_lee",
+        "label": "Person",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Mike Lee" }]
+        }
+      },
+      {
+        "id": "person_trump",
+        "label": "Person",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Donald Trump" }],
+          "sentiment": [{ "id": "prop_sent", "value": "strongly supportive" }]
+        }
+      },
+      {
+        "id": "person_glenn_beck",
+        "label": "Person",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Glenn Beck" }]
+        }
+      },
+      {
+        "id": "person_fiona_lali",
+        "label": "Person",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Fiona Lali" }],
+          "label_by_user": [{ "id": "prop_label", "value": "Communist excusing genocide" }]
+        }
+      },
+      {
+        "id": "person_woodrow_wilson",
+        "label": "HistoricalFigure",
+        "properties": {
+          "name": [{ "id": "prop_name", "value": "Woodrow Wilson" }],
+          "ranking": [{ "id": "prop_rank", "value": "dead last" }]
+        }
+      },
+      {
+        "id": "action_impeach_judge",
+        "label": "CallToAction",
+        "properties": {
+          "description": [{ "id": "prop_desc", "value": "Urge Utah legislature to impeach judge enabling NGO gerrymandering" }],
+          "target": [{ "id": "prop_target", "value": "Utah State Legislature" }]
+        }
+      },
+      {
+        "id": "action_expose_networks",
+        "label": "Activity",
+        "properties": {
+          "description": [{ "id": "prop_desc", "value": "Map and expose subversive NGO/foundation networks with receipts" }]
+        }
+      },
+      {
+        "id": "post_1988661394708046141",
+        "label": "XPost",
+        "properties": {
+          "url": [{ "id": "prop_url", "value": "https://x.com/DataRepublican/status/1988661394708046141" }],
+          "content_summary": [{ "id": "prop_sum", "value": "MWEG as front for State Dept coup in Utah" }]
+        }
+      },
+      {
+        "id": "post_1988676992351494442",
+        "label": "XPost",
+        "properties": {
+          "url": [{ "id": "prop_url", "value": "https://x.com/DataRepublican/status/1988676992351494442" }],
+          "content_summary": [{ "id": "prop_sum", "value": "Funding links: Mediators Foundation to MWEG" }]
+        }
+      },
+      {
+        "id": "post_1988677870387097777",
+        "label": "XPost",
+        "properties": {
+          "url": [{ "id": "prop_url", "value": "https://x.com/DataRepublican/status/1988677870387097777" }],
+          "content_summary": [{ "id": "prop_sum", "value": "Call to impeach Utah judge" }]
+        }
+      },
+      {
+        "id": "post_1988712340578259308",
+        "label": "XPost",
+        "properties": {
+          "url": [{ "id": "prop_url", "value": "https://x.com/DataRepublican/status/1988712340578259308" }],
+          "content_summary": [{ "id": "prop_sum", "value": "NoKings protest tied to BAMN" }]
+        }
+      },
+      {
+        "id": "post_1987550101703909532",
+        "label": "XPost",
+        "properties": {
+          "url": [{ "id": "prop_url", "value": "https://x.com/DataRepublican/status/1987550101703909532" }],
+          "content_summary": [{ "id": "prop_sum", "value": "Ex-USAID Signal group coordination" }]
+        }
+      },
+      {
+        "id": "post_1988662604806619480",
+        "label": "XPost",
+        "properties": {
+          "url": [{ "id": "prop_url", "value": "https://x.com/DataRepublican/status/1988662604806619480" }],
+          "content_summary": [{ "id": "prop_sum", "value": "One Common Purpose as anti-populist blueprint" }]
+        }
+      },
+      {
+        "id": "post_1988742523049898298",
+        "label": "XPost",
+        "properties": {
+          "url": [{ "id": "prop_url", "value": "https://x.com/DataRepublican/status/1988742523049898298" }],
+          "content_summary": [{ "id": "prop_sum", "value": "H-1B abuse in Indiana" }]
+        }
+      },
+      {
+        "id": "post_1988431007465566314",
+        "label": "XPost",
+        "properties": {
+          "url": [{ "id": "prop_url", "value": "https://x.com/DataRepublican/status/1988431007465566314" }],
+          "content_summary": [{ "id": "prop_sum", "value": "No return to low rates due to debt" }]
+        }
+      },
+      {
+        "id": "post_1988368596222070829",
+        "label": "XPost",
+        "properties": {
+          "url": [{ "id": "prop_url", "value": "https://x.com/DataRepublican/status/1988368596222070829" }],
+          "content_summary": [{ "id": "prop_sum", "value": "50-year mortgages as inflation trap" }]
+        }
+      },
+      {
+        "id": "post_1988692489780490474",
+        "label": "XPost",
+        "properties": {
+          "url": [{ "id": "prop_url", "value": "https://x.com/DataRepublican/status/1988692489780490474" }],
+          "content_summary": [{ "id": "prop_sum", "value": "Woodrow Wilson dead last" }]
+        }
+      },
+      {
+        "id": "post_1988720094575489049",
+        "label": "XPost",
+        "properties": {
+          "url": [{ "id": "prop_url", "value": "https://x.com/DataRepublican/status/1988720094575489049" }],
+          "content_summary": [{ "id": "prop_sum", "value": "Pitch for Glenn Beck podcast" }]
+        }
+      }
+    ],
+    "edges": [
+      { "id": "e1", "outV": "user_datarepublican", "inV": "theme_ngo_infiltration", "label": "FOCUSES_ON" },
+      { "id": "e2", "outV": "user_datarepublican", "inV": "theme_color_revolution", "label": "FOCUSES_ON" },
+      { "id": "e3", "outV": "user_datarepublican", "inV": "theme_immigration_economy", "label": "FOCUSES_ON" },
+      { "id": "e4", "outV": "user_datarepublican", "inV": "theme_conservative_support", "label": "FOCUSES_ON" },
+      { "id": "e5", "outV": "theme_ngo_infiltration", "inV": "org_mweg", "label": "TARGETS" },
+      { "id": "e6", "outV": "org_mweg", "inV": "org_mediators_foundation", "label": "FUNDED_BY" },
+      { "id": "e7", "outV": "org_mweg", "inV": "org_imip", "label": "TIED_TO" },
+      { "id": "e8", "outV": "theme_ngo_infiltration", "inV": "org_bamn", "label": "TARGETS" },
+      { "id": "e9", "outV": "org_bamn", "inV": "org_ford_foundation", "label": "FUNDED_BY" },
+      { "id": "e10", "outV": "org_bamn", "inV": "org_afl_cio", "label": "AFFILIATED_WITH" },
+      { "id": "e11", "outV": "theme_color_revolution", "inV": "org_usaid", "label": "INVOLVES" },
+      { "id": "e12", "outV": "org_usaid", "inV": "org_johns_hopkins", "label": "COORDINATES_WITH" },
+      { "id": "e13", "outV": "theme_color_revolution", "inV": "doc_one_common_purpose", "label": "CRITIQUES" },
+      { "id": "e14", "outV": "doc_one_common_purpose", "inV": "funder_rockefeller", "label": "FUNDED_BY" },
+      { "id": "e15", "outV": "doc_one_common_purpose", "inV": "funder_soros", "label": "FUNDED_BY" },
+      { "id": "e16", "outV": "theme_conservative_support", "inV": "person_charlie_kirk", "label": "SUPPORTS" },
+      { "id": "e17", "outV": "theme_conservative_support", "inV": "person_mike_lee", "label": "SUPPORTS" },
+      { "id": "e18", "outV": "theme_conservative_support", "inV": "person_trump", "label": "SUPPORTS" },
+      { "id": "e19", "outV": "user_datarepublican", "inV": "person_trump", "label": "ALIGNS_WITH" },
+      { "id": "e20", "outV": "user_datarepublican", "inV": "action_impeach_judge", "label": "CALLS_FOR" },
+      { "id": "e21", "outV": "user_datarepublican", "inV": "action_expose_networks", "label": "PERFORMS" },
+      { "id": "e22", "outV": "post_1988661394708046141", "inV": "org_mweg", "label": "MENTIONS" },
+      { "id": "e23", "outV": "post_1988676992351494442", "inV": "org_mediators_foundation", "label": "MENTIONS" },
+      { "id": "e24", "outV": "post_1988677870387097777", "inV": "action_impeach_judge", "label": "TRIGGERS" },
+      { "id": "e25", "outV": "post_1988712340578259308", "inV": "org_bamn", "label": "MENTIONS" },
+      { "id": "e26", "outV": "post_1987550101703909532", "inV": "org_usaid", "label": "MENTIONS" },
+      { "id": "e27", "outV": "post_1988662604806619480", "inV": "doc_one_common_purpose", "label": "CRITIQUES" },
+      { "id": "e28", "outV": "post_1988742523049898298", "inV": "theme_immigration_economy", "label": "CONTRIBUTES_TO" },
+      { "id": "e29", "outV": "post_1988431007465566314", "inV": "theme_immigration_economy", "label": "CONTRIBUTES_TO" },
+      { "id": "e30", "outV": "post_1988368596222070829", "inV": "theme_immigration_economy", "label": "CONTRIBUTES_TO" },
+      { "id": "e31", "outV": "post_1988692489780490474", "inV": "person_woodrow_wilson", "label": "RANKS" },
+      { "id": "e32", "outV": "post_1988720094575489049", "inV": "person_glenn_beck", "label": "PITCHES_TO" },
+      { "id": "e33", "outV": "user_datarepublican", "inV": "post_1988661394708046141", "label": "POSTED" },
+      { "id": "e34", "outV": "user_datarepublican", "inV": "post_1988676992351494442", "label": "POSTED" },
+      { "id": "e35", "outV": "user_datarepublican", "inV": "post_1988677870387097777", "label": "POSTED" },
+      { "id": "e36", "outV": "user_datarepublican", "inV": "post_1988712340578259308", "label": "POSTED" },
+      { "id": "e37", "outV": "user_datarepublican", "inV": "post_1987550101703909532", "label": "POSTED" },
+      { "id": "e38", "outV": "user_datarepublican", "inV": "post_1988662604806619480", "label": "POSTED" },
+      { "id": "e39", "outV": "user_datarepublican", "inV": "post_1988742523049898298", "label": "POSTED" },
+      { "id": "e40", "outV": "user_datarepublican", "inV": "post_1988431007465566314", "label": "POSTED" },
+      { "id": "e41", "outV": "user_datarepublican", "inV": "post_1988368596222070829", "label": "POSTED" },
+      { "id": "e42", "outV": "user_datarepublican", "inV": "post_1988692489780490474", "label": "POSTED" },
+      { "id": "e43", "outV": "user_datarepublican", "inV": "post_1988720094575489049", "label": "POSTED" }
+    ]
+  }
+}

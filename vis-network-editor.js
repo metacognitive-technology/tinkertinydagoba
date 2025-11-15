@@ -827,7 +827,62 @@ networkToPreJSON = () => {
   var eds = network.edgesHandler.body.data.edges.getDataSet()
   var nds = network.nodesHandler.body.data.nodes.getDataSet()
   network.storePositions()
-  return {nodes: nds.get(), edges: eds.get()}
+  
+  // Get raw data
+  const rawNodes = nds.get();
+  const rawEdges = eds.get();
+  
+  // Clean nodes: remove or serialize circular references
+  const cleanNodes = rawNodes.map(node => {
+    const cleanNode = { ...node };
+    // Remove dagobaEdge if it exists (shouldn't be on nodes, but just in case)
+    delete cleanNode.dagobaEdge;
+    // Keep dagobaId as a simple ID reference
+    // Properties are already serialized, so they should be fine
+    return cleanNode;
+  });
+  
+  // Clean edges: remove circular references from dagobaEdge
+  const cleanEdges = rawEdges.map(edge => {
+    const cleanEdge = { ...edge };
+    
+    // If dagobaEdge exists, extract only the serializable parts
+    if (cleanEdge.dagobaEdge) {
+      const dagobaEdge = cleanEdge.dagobaEdge;
+      // Store edge metadata without circular references
+      cleanEdge._dagobaId = dagobaEdge._id || null;
+      cleanEdge._dagobaOutId = dagobaEdge._out?._id || (typeof dagobaEdge._out === 'string' ? dagobaEdge._out : null);
+      cleanEdge._dagobaInId = dagobaEdge._in?._id || (typeof dagobaEdge._in === 'string' ? dagobaEdge._in : null);
+      cleanEdge._dagobaLabel = dagobaEdge._label || null;
+      
+      // Copy other properties from dagobaEdge (excluding circular refs)
+      if (dagobaEdge) {
+        Object.keys(dagobaEdge).forEach(key => {
+          if (key !== '_id' && key !== '_out' && key !== '_in' && key !== '_label') {
+            const value = dagobaEdge[key];
+            if (value !== undefined && value !== null) {
+              // Try to serialize the value - if it succeeds, it's safe to include
+              // This will catch circular references and other non-serializable structures
+              try {
+                JSON.stringify(value);
+                cleanEdge[`_dagoba_${key}`] = value;
+              } catch (e) {
+                // Skip values with circular references or other serialization issues
+                // These are likely complex Dagoba internal structures
+              }
+            }
+          }
+        });
+      }
+      
+      // Remove the circular reference
+      delete cleanEdge.dagobaEdge;
+    }
+    
+    return cleanEdge;
+  });
+  
+  return {nodes: cleanNodes, edges: cleanEdges};
 }
 
 loadNetworkFromJSON = (json) => {

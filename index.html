@@ -35,6 +35,7 @@
     <script type="text/javascript" src="dagoba.js"></script>
     <script type="text/javascript" src="gremlin-parser.js"></script>
     <script type="text/javascript" src="genealogy-data.js"></script>
+    <script type="text/javascript" src="tab-manager.js"></script>
     <script type="text/javascript" src="dagoba-integration.js"></script>
     <script type="text/javascript" src="vis-network-editor.js"></script>
 
@@ -56,6 +57,7 @@
         
         initWidgets()
         initVis()  // Initialize vis options first
+        window.TabManager.init()  // Initialize tab manager
         initDagobaGraph()  // Then initialize Dagoba graph which will render
       }) 
     </script>
@@ -78,6 +80,12 @@
       <div class="row">
         <div id="vis-config" hidden></div>
         <input id="file-input" type="file" name="name" style="display: none;" />
+        
+        <!-- Tab Container -->
+        <div class="col-sm-12" style="margin-bottom: 10px;">
+          <div id="tab-container" style="display: flex; flex-wrap: wrap; gap: 5px; padding: 5px; background-color: #f5f5f5; border-bottom: 2px solid #ddd;"></div>
+        </div>
+        
         <div class="col-sm-9">
           <div id="mynetwork"></div>
         </div>
@@ -85,19 +93,50 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4>Gremlin Queries</h4>
+              <div style="margin-bottom: 5px;">
+                <strong>Load Data Sets:</strong><br>
+                <button class="btn btn-xs btn-info" onclick="loadMatthewGenealogy()" style="margin: 2px;">Matthew</button>
+                <button class="btn btn-xs btn-info" onclick="loadLukeGenealogy()" style="margin: 2px;">Luke</button>
+                <button class="btn btn-xs btn-info" onclick="loadInterstateData()" style="margin: 2px;">Interstates</button>
+                <button class="btn btn-xs btn-success" onclick="generateRandomGraph()" style="margin: 2px;">🎲 Random Graph</button>
+              </div>
               <button class="btn btn-sm btn-primary" onclick="saveCurrentQuery()" style="margin: 5px 0;">Save Query</button>
               <button class="btn btn-sm btn-info" onclick="toggleLukeLayer()" style="margin: 5px 0;">Toggle Luke 3</button>
             <button class="btn btn-sm btn-success" onclick="exportGraphSON()" style="margin: 5px 0;">Export GraphSON</button>
             <button class="btn btn-sm btn-warning" onclick="importGraphSONFromFile()" style="margin: 5px 0;">Import GraphSON</button>
-            <button class="btn btn-sm btn-danger" onclick="resetGraph()" style="margin: 5px 0;" title="Clear localStorage and reset to initial graph">Reset Graph</button>
+            <button class="btn btn-sm btn-danger" onclick="resetGraph()" style="margin: 5px 0;" title="Clear localStorage and reset to empty graph">Reset Graph</button>
+            <button class="btn btn-sm btn-danger" onclick="clearAllLocalStorage()" style="margin: 5px 0;" title="Clear all localStorage data (tabs, scripts, graph, queries)">Clear All Data</button>
             <button class="btn btn-sm btn-default" onclick="showGremlinHelp()" style="margin: 5px 0;">Help</button>
             </div>
             <div class="panel-body">
+              <!-- Script Library -->
+              <div class="panel panel-default" style="margin-bottom: 10px;">
+                <div class="panel-heading">
+                  <h5>Script Library</h5>
+                  <button class="btn btn-xs btn-primary" onclick="saveToScriptLibrary()" style="float: right; margin-top: -25px;">Save Current</button>
+                </div>
+                <div class="panel-body" style="padding: 5px;">
+                  <div style="margin-bottom: 5px;">
+                    <label style="font-size: 0.9em;">Category:</label>
+                    <select id="script-category-select" class="form-control" style="font-size: 0.9em;">
+                      <option value="all">All Categories</option>
+                    </select>
+                  </div>
+                  <div id="script-library-list" style="max-height: 200px; overflow-y: auto;"></div>
+                </div>
+              </div>
+              
               <div id="saved-queries-list"></div>
               <div id="query-editor-container" style="margin-top: 10px;">
                 <textarea id="query-editor" class="form-control" rows="5" placeholder="Enter Gremlin query (e.g., v({name: 'Jesus Christ'}))"></textarea>
                 <button class="btn btn-sm btn-success" onclick="executeQuery()" style="margin-top: 5px;">Execute</button>
                 <button class="btn btn-sm btn-warning" onclick="clearQueryResults()" style="margin-top: 5px;">Clear Results</button>
+                <div style="margin-top: 5px;">
+                  <label>Visualize in tab:</label>
+                  <select id="result-tab-select" class="form-control" style="font-size: 0.9em;">
+                    <option value="current">Current Tab</option>
+                  </select>
+                </div>
               </div>
               <div id="query-results" style="margin-top: 10px; max-height: 200px; overflow-y: auto;"></div>
               

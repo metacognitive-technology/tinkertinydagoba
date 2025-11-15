@@ -24,18 +24,18 @@ initDagobaGraph = () => {
     alert('Warning: Gremlin query parser is not loaded. Queries may not work.');
   }
   
-  // Load from localStorage or create new
+  // Load from localStorage or create empty graph
   const saved = localStorage.getItem('dagoba_graph');
   if (saved) {
     try {
       const data = JSON.parse(saved);
-      window.dagobaGraph = Dagoba.graph(data.V, data.E);
+      window.dagobaGraph = Dagoba.graph(data.V || [], data.E || []);
     } catch (e) {
       console.error('Error loading saved graph:', e);
-      window.dagobaGraph = createGenealogyGraph();
+      window.dagobaGraph = Dagoba.graph([], []); // Start with empty graph
     }
   } else {
-    window.dagobaGraph = createGenealogyGraph();
+    window.dagobaGraph = Dagoba.graph([], []); // Start with empty graph
   }
   
   // Load saved queries
@@ -51,23 +51,23 @@ initDagobaGraph = () => {
       });
     } catch (e) {
       console.error('Error loading saved queries:', e);
-      // Initialize with default queries, ensuring they have IDs
-      window.savedQueries = GenealogyData.defaultQueries.map((q, idx) => ({
-        ...q,
-        id: Date.now() + idx
-      }));
+      // Initialize with empty array
+      window.savedQueries = [];
     }
   } else {
-    // Initialize with default queries, ensuring they have IDs
-    window.savedQueries = GenealogyData.defaultQueries.map((q, idx) => ({
-      ...q,
-      id: Date.now() + idx
-    }));
+    // Initialize with empty array
+    window.savedQueries = [];
   }
   
   // Render graph to vis-network
   renderDagobaToVis();
   renderSavedQueries();
+  
+  // Initialize script library display
+  if (window.TabManager) {
+    window.TabManager.renderScriptLibrary();
+    window.TabManager.updateTabSelector();
+  }
   
   // Load geographic layout settings if they exist
   const savedLayout = localStorage.getItem('geographic_layout');
@@ -89,6 +89,13 @@ initDagobaGraph = () => {
   
   // Auto-save on changes
   setupAutoSave();
+};
+
+// Helper function to update tab selector (called from tab manager)
+updateTabSelector = () => {
+  if (window.TabManager) {
+    window.TabManager.updateTabSelector();
+  }
 };
 
 createGenealogyGraph = () => {
@@ -224,33 +231,87 @@ dagobaToVisNetwork = (graph, highlightNodes = [], highlightEdges = []) => {
 renderDagobaToVis = (highlightNodes = [], highlightEdges = []) => {
   if (!window.dagobaGraph) return;
   
-  const data = dagobaToVisNetwork(window.dagobaGraph, highlightNodes, highlightEdges);
-  
-  if (window.network) {
-    const nodesDataSet = new vis.DataSet(data.nodes);
-    const edgesDataSet = new vis.DataSet(data.edges);
-    window.network.setData({ nodes: nodesDataSet, edges: edgesDataSet });
-    
-    // Ensure property display is set up
-    setupPropertyDisplay();
-  } else {
-    // Initialize vis-network if not already done
-    // Use defaultOptions if available, otherwise create basic options
-    const options = window.defaultOptions || {
-      interaction: { hover: true },
-      physics: true,
-      nodes: { shape: "box" },
-      edges: { arrows: { to: { enabled: true } } }
-    };
-    const nodesDataSet = new vis.DataSet(data.nodes);
-    const edgesDataSet = new vis.DataSet(data.edges);
-    window.network = new vis.Network($('#mynetwork')[0], 
-      { nodes: nodesDataSet, edges: edgesDataSet }, 
-      options);
-    
-    // Setup event handlers for showing properties
-    setupPropertyDisplay();
+  // Set cursor to wait during rendering
+  const networkContainer = document.getElementById('mynetwork');
+  const body = document.body;
+  if (networkContainer) {
+    networkContainer.style.cursor = 'wait';
   }
+  if (body) {
+    body.style.cursor = 'wait';
+  }
+  
+  // Use setTimeout to allow UI to update cursor before heavy processing
+  setTimeout(() => {
+    try {
+      const data = dagobaToVisNetwork(window.dagobaGraph, highlightNodes, highlightEdges);
+      
+      if (window.network) {
+        const nodesDataSet = new vis.DataSet(data.nodes);
+        const edgesDataSet = new vis.DataSet(data.edges);
+        window.network.setData({ nodes: nodesDataSet, edges: edgesDataSet });
+        
+        // Ensure property display is set up
+        setupPropertyDisplay();
+        
+        // Wait for network to stabilize before restoring cursor
+        if (window.network.physics && window.network.physics.physicsEnabled) {
+          window.network.once('stabilizationEnd', () => {
+            if (networkContainer) networkContainer.style.cursor = '';
+            if (body) body.style.cursor = '';
+          });
+          // Also set a timeout as fallback in case stabilization doesn't fire
+          setTimeout(() => {
+            if (networkContainer) networkContainer.style.cursor = '';
+            if (body) body.style.cursor = '';
+          }, 2000);
+        } else {
+          // If physics is disabled, restore cursor immediately
+          if (networkContainer) networkContainer.style.cursor = '';
+          if (body) body.style.cursor = '';
+        }
+      } else {
+        // Initialize vis-network if not already done
+        // Use defaultOptions if available, otherwise create basic options
+        const options = window.defaultOptions || {
+          interaction: { hover: true },
+          physics: true,
+          nodes: { shape: "box" },
+          edges: { arrows: { to: { enabled: true } } }
+        };
+        const nodesDataSet = new vis.DataSet(data.nodes);
+        const edgesDataSet = new vis.DataSet(data.edges);
+        window.network = new vis.Network($('#mynetwork')[0], 
+          { nodes: nodesDataSet, edges: edgesDataSet }, 
+          options);
+        
+        // Setup event handlers for showing properties
+        setupPropertyDisplay();
+        
+        // Wait for network to stabilize before restoring cursor
+        if (window.network.physics && window.network.physics.physicsEnabled) {
+          window.network.once('stabilizationEnd', () => {
+            if (networkContainer) networkContainer.style.cursor = '';
+            if (body) body.style.cursor = '';
+          });
+          // Also set a timeout as fallback
+          setTimeout(() => {
+            if (networkContainer) networkContainer.style.cursor = '';
+            if (body) body.style.cursor = '';
+          }, 2000);
+        } else {
+          // If physics is disabled, restore cursor immediately
+          if (networkContainer) networkContainer.style.cursor = '';
+          if (body) body.style.cursor = '';
+        }
+      }
+    } catch (error) {
+      console.error('Error rendering graph:', error);
+      // Restore cursor on error
+      if (networkContainer) networkContainer.style.cursor = '';
+      if (body) body.style.cursor = '';
+    }
+  }, 10);
 };
 
 // Setup property display on node/edge selection
@@ -394,16 +455,32 @@ executeQuery = () => {
     return;
   }
   
-  try {
-    console.log('Executing query:', queryText);
-    
-    // Check if GremlinParser is available
-    if (typeof window.GremlinParser === 'undefined') {
-      throw new Error('GremlinParser is not loaded. Please refresh the page.');
-    }
-    
-    const results = window.GremlinParser.execute(window.dagobaGraph, queryText);
-    console.log('Query results:', results);
+  // Set cursor to progress during query execution
+  const networkContainer = document.getElementById('mynetwork');
+  const body = document.body;
+  const queryEditor = document.getElementById('query-editor');
+  if (networkContainer) {
+    networkContainer.style.cursor = 'progress';
+  }
+  if (body) {
+    body.style.cursor = 'progress';
+  }
+  if (queryEditor) {
+    queryEditor.style.cursor = 'progress';
+  }
+  
+  // Use setTimeout to allow UI to update cursor before query execution
+  setTimeout(() => {
+    try {
+      console.log('Executing query:', queryText);
+      
+      // Check if GremlinParser is available
+      if (typeof window.GremlinParser === 'undefined') {
+        throw new Error('GremlinParser is not loaded. Please refresh the page.');
+      }
+      
+      const results = window.GremlinParser.execute(window.dagobaGraph, queryText);
+      console.log('Query results:', results);
     
     // Extract node IDs and edge objects from results
     const highlightNodes = [];
@@ -434,8 +511,22 @@ executeQuery = () => {
     
     window.queryResults = { nodes: highlightNodes, edges: highlightEdges, results: results };
     
-    // Update highlights without changing layout
-    updateQueryHighlights(highlightNodes, highlightEdges);
+    // Get target tab for visualization
+    const targetTabSelect = document.getElementById('result-tab-select');
+    const targetTabId = targetTabSelect ? targetTabSelect.value : 'current';
+    
+    // Assign results to the selected tab
+    if (window.TabManager && targetTabId !== 'current') {
+      window.TabManager.assignResultsToTab(targetTabId, window.queryResults);
+    } else if (window.TabManager) {
+      // Save to current tab
+      window.TabManager.saveCurrentTabState();
+    }
+    
+    // Update highlights without changing layout (only if current tab)
+    if (targetTabId === 'current' || !targetTabSelect) {
+      updateQueryHighlights(highlightNodes, highlightEdges);
+    }
     
     // Show results
     if (results.length === 0) {
@@ -477,11 +568,22 @@ executeQuery = () => {
           return `${i + 1}. ${String(r)}`;
         }).join('<br>'));
     }
+    
+    // Restore cursor after query execution
+    if (networkContainer) networkContainer.style.cursor = '';
+    if (body) body.style.cursor = '';
+    if (queryEditor) queryEditor.style.cursor = '';
   } catch (error) {
     alert('Query error: ' + error.message);
     console.error('Query execution error:', error);
     console.error('Query was:', queryText);
+    
+    // Restore cursor on error
+    if (networkContainer) networkContainer.style.cursor = '';
+    if (body) body.style.cursor = '';
+    if (queryEditor) queryEditor.style.cursor = '';
   }
+  }, 10);
 };
 
 // Update query highlights without changing layout
@@ -704,9 +806,200 @@ saveCurrentQuery = () => {
   }
 };
 
+// Generate random graph
+generateRandomGraph = () => {
+  if (!window.dagobaGraph) {
+    alert('Graph not initialized');
+    return;
+  }
+  
+  // Prompt for parameters
+  const numVertices = parseInt(prompt('Number of vertices:', '50'), 10);
+  if (isNaN(numVertices) || numVertices < 1) {
+    alert('Invalid number of vertices');
+    return;
+  }
+  
+  const numEdges = parseInt(prompt('Number of edges:', '100'), 10);
+  if (isNaN(numEdges) || numEdges < 0) {
+    alert('Invalid number of edges');
+    return;
+  }
+  
+  const addProperties = confirm('Add random properties to vertices?');
+  const edgeLabels = confirm('Use random edge labels?');
+  
+  // Ask if user wants to clear existing graph or add to it
+  const clearFirst = confirm('Clear existing graph before generating? (Cancel to add to existing)');
+  
+  if (clearFirst) {
+    // Clear existing graph - make a copy of vertices array to avoid modification during iteration
+    const verticesToRemove = window.dagobaGraph.vertices.slice();
+    verticesToRemove.forEach(v => {
+      try {
+        window.dagobaGraph.removeVertex(v);
+      } catch (e) {
+        // Vertex might already be removed, skip
+      }
+    });
+    // Recreate empty graph
+    window.dagobaGraph = Dagoba.graph([], []);
+  }
+  
+  // Generate random names and labels
+  const firstNames = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry', 'Ivy', 'Jack', 
+                      'Kate', 'Liam', 'Mia', 'Noah', 'Olivia', 'Paul', 'Quinn', 'Rachel', 'Sam', 'Tina',
+                      'Uma', 'Victor', 'Wendy', 'Xander', 'Yara', 'Zoe'];
+  const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
+                     'Hernandez', 'Lopez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee'];
+  const edgeLabelOptions = ['knows', 'follows', 'likes', 'works_with', 'friend', 'colleague', 'partner', 'connects', 'links', 'related'];
+  const propertyKeys = ['age', 'score', 'rating', 'level', 'rank', 'weight', 'height', 'value', 'count', 'index'];
+  
+  // Generate vertices
+  const vertices = [];
+  const vertexIds = [];
+  
+  for (let i = 0; i < numVertices; i++) {
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    const name = `${firstName} ${lastName}`;
+    
+    const vertex = {
+      name: name,
+      type: Math.random() > 0.7 ? 'person' : (Math.random() > 0.5 ? 'entity' : 'node')
+    };
+    
+    // Add random properties
+    if (addProperties) {
+      const numProps = Math.floor(Math.random() * 4) + 1; // 1-4 properties
+      for (let j = 0; j < numProps; j++) {
+        const propKey = propertyKeys[Math.floor(Math.random() * propertyKeys.length)];
+        if (propKey === 'age') {
+          vertex[propKey] = Math.floor(Math.random() * 80) + 18; // 18-97
+        } else if (propKey === 'score' || propKey === 'rating') {
+          vertex[propKey] = Math.floor(Math.random() * 100);
+        } else if (propKey === 'level' || propKey === 'rank') {
+          vertex[propKey] = Math.floor(Math.random() * 10) + 1;
+        } else {
+          vertex[propKey] = Math.floor(Math.random() * 1000);
+        }
+      }
+    }
+    
+    // Add vertex to graph
+    const vertexId = window.dagobaGraph.addVertex(vertex);
+    vertices.push(vertex);
+    vertexIds.push(vertexId);
+  }
+  
+  // Generate edges
+  const edges = [];
+  const edgeSet = new Set(); // Track edges to avoid duplicates
+  const maxEdges = Math.min(numEdges, numVertices * (numVertices - 1)); // Prevent more edges than possible
+  let attempts = 0;
+  const maxAttempts = maxEdges * 10; // Prevent infinite loops
+  
+  while (edges.length < maxEdges && attempts < maxAttempts) {
+    attempts++;
+    
+    // Randomly select two different vertices
+    const fromIndex = Math.floor(Math.random() * numVertices);
+    let toIndex = Math.floor(Math.random() * numVertices);
+    
+    // Ensure different vertices
+    while (toIndex === fromIndex && numVertices > 1) {
+      toIndex = Math.floor(Math.random() * numVertices);
+    }
+    
+    const fromVertex = vertices[fromIndex];
+    const toVertex = vertices[toIndex];
+    
+    if (!fromVertex || !toVertex) continue;
+    
+    // Create edge key to check for duplicates
+    const edgeKey = `${fromVertex._id}_${toVertex._id}`;
+    if (edgeSet.has(edgeKey)) {
+      continue; // Skip duplicate edge
+    }
+    
+    const label = edgeLabels ? edgeLabelOptions[Math.floor(Math.random() * edgeLabelOptions.length)] : 'edge';
+    const edge = {
+      _out: fromVertex._id,
+      _in: toVertex._id,
+      _label: label
+    };
+    
+    // Add random edge properties sometimes
+    if (Math.random() > 0.7) {
+      edge.weight = Math.random();
+      edge.strength = Math.floor(Math.random() * 10) + 1;
+    }
+    
+    try {
+      window.dagobaGraph.addEdge(edge);
+      edges.push(edge);
+      edgeSet.add(edgeKey);
+    } catch (e) {
+      // Edge might already exist or vertices not found, skip it
+      console.warn('Could not add edge:', e);
+    }
+  }
+  
+  // Re-render the graph
+  renderDagobaToVis();
+  saveGraph();
+  
+  alert(`Generated random graph:\n- ${vertices.length} vertices\n- ${edges.length} edges`);
+};
+
+// Save to script library
+saveToScriptLibrary = () => {
+  const queryText = $('#query-editor').val().trim();
+  if (!queryText) {
+    alert('Please enter a query first');
+    return;
+  }
+  
+  const name = prompt('Enter a name for this script:', '');
+  if (!name || !name.trim()) {
+    return;
+  }
+  
+  const description = prompt('Enter a description (optional):', '');
+  
+  // Get category selection
+  let category = null;
+  if (window.TabManager && window.TabManager.categories.length > 0) {
+    const categoryNames = window.TabManager.categories.map(c => c.name).join(', ');
+    const categoryInput = prompt(`Enter category (${categoryNames}) or leave blank for current:`, '');
+    if (categoryInput && categoryInput.trim()) {
+      const foundCat = window.TabManager.categories.find(c => 
+        c.name.toLowerCase() === categoryInput.trim().toLowerCase()
+      );
+      category = foundCat ? foundCat.id : window.TabManager.selectedCategory || 'general';
+    } else {
+      category = window.TabManager.selectedCategory || 'general';
+    }
+  }
+  
+  if (window.TabManager) {
+    window.TabManager.saveToScriptLibrary(name.trim(), queryText, description || '', category);
+    window.TabManager.renderScriptLibrary();
+    alert('Script saved to library!');
+  } else {
+    alert('Tab manager not initialized');
+  }
+};
+
 // Save graph to localStorage
 saveGraph = () => {
   try {
+    // Save to current tab if tab manager is active
+    if (window.TabManager && window.TabManager.activeTabId) {
+      window.TabManager.saveCurrentTabState();
+    }
+    
+    // Also save to legacy localStorage for backward compatibility
     const graphData = {
       V: window.dagobaGraph.vertices.map(v => {
         const clean = {};
@@ -729,12 +1022,186 @@ saveGraph = () => {
   }
 };
 
+// Load data set functions
+loadMatthewGenealogy = () => {
+  if (!window.dagobaGraph) {
+    alert('Graph not initialized');
+    return;
+  }
+  
+  try {
+    // Add Matthew genealogy vertices and edges
+    GenealogyData.matthew.vertices.forEach(v => {
+      try {
+        window.dagobaGraph.addVertex(v);
+      } catch (e) {
+        // Vertex might already exist, skip
+      }
+    });
+    
+    GenealogyData.matthew.edges.forEach(e => {
+      try {
+        window.dagobaGraph.addEdge(e);
+      } catch (e) {
+        // Edge might already exist, skip
+      }
+    });
+    
+    renderDagobaToVis();
+    saveGraph();
+    alert(`Loaded ${GenealogyData.matthew.vertices.length} vertices and ${GenealogyData.matthew.edges.length} edges from Matthew genealogy.`);
+  } catch (e) {
+    console.error('Error loading Matthew genealogy:', e);
+    alert('Error loading Matthew genealogy: ' + e.message);
+  }
+};
+
+loadLukeGenealogy = () => {
+  if (!window.dagobaGraph) {
+    alert('Graph not initialized');
+    return;
+  }
+  
+  try {
+    // Add Luke genealogy vertices and edges
+    let verticesAdded = 0;
+    let edgesAdded = 0;
+    
+    GenealogyData.luke.vertices.forEach(v => {
+      try {
+        window.dagobaGraph.addVertex(v);
+        verticesAdded++;
+      } catch (e) {
+        // Vertex might already exist, skip
+      }
+    });
+    
+    GenealogyData.luke.edges.forEach(e => {
+      try {
+        window.dagobaGraph.addEdge(e);
+        edgesAdded++;
+      } catch (e) {
+        // Edge might already exist, skip
+      }
+    });
+    
+    renderDagobaToVis();
+    saveGraph();
+    alert(`Loaded ${verticesAdded} vertices and ${edgesAdded} edges from Luke genealogy.`);
+  } catch (e) {
+    console.error('Error loading Luke genealogy:', e);
+    alert('Error loading Luke genealogy: ' + e.message);
+  }
+};
+
+loadInterstateData = () => {
+  if (!window.dagobaGraph) {
+    alert('Graph not initialized');
+    return;
+  }
+  
+  // Load the interstate GraphSON file
+  fetch('us_primary_interstates_path.graphson')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(content => {
+      try {
+        importGraphSON(content);
+        alert('Interstate data loaded successfully!');
+      } catch (e) {
+        console.error('Error importing interstate data:', e);
+        alert('Error importing interstate data: ' + e.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error loading interstate file:', error);
+      alert('Error loading interstate file: ' + error.message);
+    });
+};
+
+// Clear all localStorage data
+clearAllLocalStorage = () => {
+  if (!confirm('Are you sure you want to clear ALL localStorage data?\n\nThis will remove:\n' +
+               '- All graph data\n' +
+               '- All saved queries\n' +
+               '- All tabs\n' +
+               '- All script library entries\n' +
+               '- All geographic layout settings\n\n' +
+               'This action cannot be undone!')) {
+    return;
+  }
+  
+  try {
+    // Clear all TinkerTiny-related localStorage keys
+    localStorage.removeItem('dagoba_graph');
+    localStorage.removeItem('dagoba_saved_queries');
+    localStorage.removeItem('tinkertiny_tabs');
+    localStorage.removeItem('tinkertiny_script_library');
+    localStorage.removeItem('geographic_layout');
+    
+    // Reset graph
+    window.dagobaGraph = Dagoba.graph([], []);
+    window.savedQueries = [];
+    window.queryResults = null;
+    window.lukeLayerVisible = false;
+    window.lukeVertices = [];
+    window.lukeEdges = [];
+    
+    // Reset tab manager
+    if (window.TabManager) {
+      window.TabManager.tabs = [];
+      window.TabManager.scriptLibrary = [];
+      window.TabManager.categories = [];
+      window.TabManager.selectedCategory = 'all';
+      
+      // Reinitialize with default tab
+      window.TabManager.createTab('Tab 1');
+    }
+    
+    // Clear query editor
+    const queryEditor = document.getElementById('query-editor');
+    if (queryEditor) {
+      queryEditor.value = '';
+    }
+    
+    // Clear query results
+    const queryResults = document.getElementById('query-results');
+    if (queryResults) {
+      queryResults.innerHTML = '';
+    }
+    
+    // Re-render everything
+    renderDagobaToVis();
+    renderSavedQueries();
+    clearQueryResults();
+    
+    if (window.TabManager) {
+      window.TabManager.renderTabs();
+      window.TabManager.renderScriptLibrary();
+    }
+    
+    alert('All localStorage data has been cleared. The page will refresh.');
+    
+    // Reload page to ensure clean state
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  } catch (e) {
+    console.error('Error clearing localStorage:', e);
+    alert('Error clearing localStorage: ' + e.message);
+  }
+};
+
 // Reset graph to initial state and clear localStorage
 resetGraph = () => {
   if (!confirm('Are you sure you want to reset the graph? This will:\n' +
                '- Clear all saved data from localStorage\n' +
-               '- Reset the graph to initial Matthew genealogy\n' +
-               '- Reset saved queries to defaults\n' +
+               '- Reset the graph to empty\n' +
+               '- Clear all saved queries\n' +
                '- Clear the Luke 3 layer\n\n' +
                'This action cannot be undone.')) {
     return;
@@ -745,8 +1212,8 @@ resetGraph = () => {
     localStorage.removeItem('dagoba_graph');
     localStorage.removeItem('dagoba_saved_queries');
     
-    // Reset graph to initial state (Matthew genealogy only)
-    window.dagobaGraph = createGenealogyGraph();
+    // Reset graph to empty
+    window.dagobaGraph = Dagoba.graph([], []);
     
     // Reset Luke layer state
     window.lukeLayerVisible = false;
@@ -754,10 +1221,7 @@ resetGraph = () => {
     window.lukeEdges = [];
     
     // Reset saved queries to defaults
-    window.savedQueries = GenealogyData.defaultQueries.map((q, idx) => ({
-      ...q,
-      id: Date.now() + idx
-    }));
+    window.savedQueries = [];
     
     // Clear query results
     window.queryResults = null;
